@@ -59,7 +59,7 @@ VAR_PAHT_GUNICORN_SERVICE="/etc/systemd/system/$VAR_GUNICORN_SERVICE"
 VAR_SITE_NGNIX="$VAR_SITE.conf"
 VAR_PAHT_NGNIX="/etc/nginx/sites-available"
 VAR_PAHT_SITE_NGNIX="$VAR_PAHT_NGNIX/$VAR_SITE_NGNIX"
-VAR_DOMAIN_OR_IP="$VAR_SITE.io"
+VAR_DOMAIN_OR_IP="$VAR_SITE.com"
 VAR_SITE_PORT="80"
 
 # Base de datos
@@ -365,7 +365,7 @@ if [ $VAR_SITE_PORT = "80" ];
 then
 	echo -e "Sitio web: http://$VAR_DOMAIN_OR_IP"
 else
-	echo -e "http://$VAR_DOMAIN_OR_IP:$VAR_SITE_PORT"
+	echo -e "Sitio web: http://$VAR_DOMAIN_OR_IP:$VAR_SITE_PORT"
 fi;
 
 if [ $VAR_DATABASE_USE -eq 1 ];
