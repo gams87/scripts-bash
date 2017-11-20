@@ -5,7 +5,7 @@ Script para instalar un sitio en produción con las siguientes tecnologías
 1. Linux
 2. Python
 3. Django
-4. Postgres, Mysql o SQLite
+4. Postgres o Mysql
 5. Git
 6. Nginx
 7. PHPpgadmin
@@ -17,7 +17,7 @@ Script para instalar un sitio en produción con las siguientes tecnologías
 - **VAR_NEW_PROJECT=0**						# 1 => Repositorio Nuevo, 0 => Clonar repositorio
 - **VAR_SITE="misitio"** 					#  Nombre de mi sitio
 - **VAR_USER=$(who | cut -d' ' -f 1)** 		# Validar si este comando who | cut -d' ' -f 1 trae nuestro usuario si no podemos agregarlo literal
-- **VAR_REPO_ORIGIN="https://github.com/gams87/django-site-example.git" # Dirección de mi repositorio
+- **VAR_REPO_ORIGIN="https://github.com/gams87/django-site-example.git"** # Dirección de mi repositorio
 - **VAR_REPO_NAME="django-site-example"**	# Nombre del repositorio a clonar si VAR_NEW_PROJECT=0
 - **VAR_REPO_BRANCH="master"**				# Rama del repositorio
 - **VAR_DEPENDENCIES="pillow"**				# Librerias Python necesarias separadas por espacio
@@ -26,7 +26,7 @@ Script para instalar un sitio en produción con las siguientes tecnologías
 2. Modificar las variables de base de datos del fichero **install-production-server-ngnix.sh**
 
 - **VAR_DATABASE_USE=0**					# 1 => Usa base de datos 0 => No usa base de datos
-- **VAR_DATABASE_ENGINE="postgresql"**		# Motor de base de datos
+- **VAR_DATABASE_ENGINE="postgresql"**		# Motor de base de datos postgresql o mysql
 - **VAR_DATABASE_USER=$VAR_SITE**			# Usuario de base de datos, en este caso el mismo que el sitio
 - **VAR_DATABASE_PASSWORD="mipasswd"**		# Password de mi base de datos
 - **VAR_DATABASE_PORT_WEB="8081"**			# Puerto para la administración de phppgadmin
