@@ -240,8 +240,8 @@ echo "" >> $VAR_GUNICORN_SERVICE
 echo "[Service]" >> $VAR_GUNICORN_SERVICE
 echo "User=$VAR_USER" >> $VAR_GUNICORN_SERVICE
 echo "Group=www-data" >> $VAR_GUNICORN_SERVICE
-echo "WorkingDirectory=$VAR_PROJECT" >> $VAR_GUNICORN_SERVICE
-echo "ExecStart=$VAR_VIRTUALENV/bin/gunicorn --workers 3 --bind unix:$VAR_PROJECT/$VAR_SITE.sock $VAR_PATH_SETTINGS_DJANGO.wsgi:application" >> $VAR_GUNICORN_SERVICE
+echo "WorkingDirectory=$VAR_PROJECT/$VAR_SITE" >> $VAR_GUNICORN_SERVICE
+echo "ExecStart=$VAR_VIRTUALENV/bin/gunicorn --workers 3 --bind unix:$VAR_PROJECT/$VAR_SITE.sock $VAR_SITE.wsgi:application" >> $VAR_GUNICORN_SERVICE
 echo "" >> $VAR_GUNICORN_SERVICE
 echo "[Install]" >> $VAR_GUNICORN_SERVICE
 echo "WantedBy=multi-user.target" >> $VAR_GUNICORN_SERVICE
