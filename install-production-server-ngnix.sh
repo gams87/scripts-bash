@@ -148,8 +148,8 @@ then
 
 		
 		echo -e ""
-		echo -e "Digite o copie y pegue la siguiente linea y presione enter =>"
 		echo -e "============================================================================"
+		echo -e "Digite o copie y pegue la siguiente linea y presione enter =>"
 		echo -e "CREATE USER $VAR_DATABASE_USER WITH PASSWORD '$VAR_DATABASE_PASSWORD';" \\q
 		echo -e "============================================================================"
 		sudo -u postgres psql
