@@ -64,6 +64,7 @@ VAR_SITE_PORT="80"
 
 # Base de datos
 VAR_DATABASE_USE=1 # 1 => true 0 => false
+VAR_DATABASE_NAME=$VAR_SITE
 VAR_DATABASE_ENGINE="postgresql"  # mysql
 VAR_DATABASE_USER="application"
 VAR_DATABASE_PASSWORD="123456"
@@ -148,8 +149,8 @@ then
 		sudo -u postgres psql
 		# sudo -u postgres psql -c "CREATE USER $VAR_DATABASE_USER WITH PASSWORD '$VAR_DATABASE_PASWORD';"
 
-		echo -e "CREATE DATABASE $VAR_SITE;"
-		sudo -u postgres psql -c "CREATE DATABASE $VAR_SITE;"
+		echo -e "CREATE DATABASE $VAR_DATABASE_NAME;"
+		sudo -u postgres psql -c "CREATE DATABASE $VAR_DATABASE_NAME;"
 		
 		echo -e "ALTER ROLE $VAR_DATABASE_USER SET client_encoding TO 'utf8';"
 		sudo -u postgres psql -c "ALTER ROLE $VAR_DATABASE_USER SET client_encoding TO 'utf8';"
@@ -160,11 +161,11 @@ then
 		echo -e "ALTER ROLE $VAR_DATABASE_USER SET timezone TO 'UTC';"
 		sudo -u postgres psql -c "ALTER ROLE $VAR_DATABASE_USER SET timezone TO 'UTC';"
 		
-		echo -e "GRANT ALL PRIVILEGES ON DATABASE $VAR_SITE TO $VAR_DATABASE_USER;"
-		sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $VAR_SITE TO $VAR_DATABASE_USER;"
+		echo -e "GRANT ALL PRIVILEGES ON DATABASE $VAR_DATABASE_NAME TO $VAR_DATABASE_USER;"
+		sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $VAR_DATABASE_NAME TO $VAR_DATABASE_USER;"
 		
-		echo -e "ALTER DATABASE $VAR_SITE OWNER TO $VAR_DATABASE_USER;"
-		sudo -u postgres psql -c "ALTER DATABASE $VAR_SITE OWNER TO $VAR_DATABASE_USER;"
+		echo -e "ALTER DATABASE $VAR_DATABASE_NAME OWNER TO $VAR_DATABASE_USER;"
+		sudo -u postgres psql -c "ALTER DATABASE $VAR_DATABASE_NAME OWNER TO $VAR_DATABASE_USER;"
 		
 		# sudo -u postgres psql
 
