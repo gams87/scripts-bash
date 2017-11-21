@@ -149,6 +149,7 @@ then
 		echo -e "Copie y pegue esta linea:"
 		echo -e "CREATE USER $VAR_DATABASE_USER WITH PASSWORD '$VAR_DATABASE_PASSWORD';"
 		echo -e "Luego compie y pegue => \\q"
+		sudo -u postgres psql
 		#sudo -u postgres psql -c "CREATE USER $VAR_DATABASE_USER WITH PASSWORD '$VAR_DATABASE_PASWORD';"
 		
 		echo -e "ALTER ROLE $VAR_DATABASE_USER SET client_encoding TO 'utf8';"
