@@ -47,7 +47,7 @@ VAR_REPO_ORIGIN="https://github.com/gams87/django-site-example.git"
 VAR_REPO_BRANCH="master"
 
 # Variables virtualenv
-VAR_DEPENDENCIES="pillow"
+VAR_DEPENDENCIES="pillow psycopg2 mysql-connector"
 VAR_ENV="-env"
 VAR_PROJECTENV=$VAR_SITE$VAR_ENV
 
@@ -126,7 +126,7 @@ then
 		sudo apt-get install mysql-server -y
 		sudo mysql_secure_installation
 		echo -e "CREATE DATABASE $VAR_SITE CHARACTER SET utf8;"
-		mysql -u root -p
+		mysql -u root -e "CREATE DATABASE '$VAR_SITE' CHARACTER SET utf8;"
 	fi;
 	
 	if [ $VAR_DATABASE_ENGINE = "postgresql" ];
