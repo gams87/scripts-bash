@@ -146,9 +146,14 @@ then
 		echo -e "CREATE DATABASE $VAR_SITE;"
 		sudo -u postgres psql -c "CREATE DATABASE $VAR_SITE;"
 
-		echo -e "Copie y pegue esta linea:"
+		
+		echo -e ""
+		echo -e "============================================================================"
+		echo -e "Copie y pegue la siguiente linea:"
 		echo -e "CREATE USER $VAR_DATABASE_USER WITH PASSWORD '$VAR_DATABASE_PASSWORD';"
 		echo -e "Luego compie y pegue => \\q"
+		echo -e "============================================================================"
+		echo -e ""
 		sudo -u postgres psql
 		#sudo -u postgres psql -c "CREATE USER $VAR_DATABASE_USER WITH PASSWORD '$VAR_DATABASE_PASWORD';"
 		
