@@ -121,6 +121,12 @@ VAR_GUNICORN_SERVICE="gunicorn-$VAR_SITE.service"
 VAR_PAHT_GUNICORN_SERVICE="/etc/systemd/system/$VAR_GUNICORN_SERVICE"
 
 VAR_FILE_INFO="$VAR_HOME/resume-$VAR_SITE.txt"
+
+if [ -f $VAR_FILE_INFO ];
+then
+	rm -f $VAR_FILE_INFO
+fi;
+
 echo "=====================================" >> $VAR_FILE_INFO
 echo "Información General del Proyecto" >> $VAR_FILE_INFO
 echo "=====================================" >> $VAR_FILE_INFO
