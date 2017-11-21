@@ -52,7 +52,7 @@ echo -e "\e[32m[Fin de actualizacion del servidor]\e[39m"
 #=======================================================================
 # Configurar locales
 #=======================================================================
-echo -n "Desea configurar los locales [yes/no] (yes): "
+echo -n "\nDesea configurar los locales [yes/no] (yes): "
 read VAR_INPUT
 VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
 
@@ -84,7 +84,6 @@ sudo -H pip install --upgrade pip
 sudo -H pip3 install setuptools
 sudo -H pip3 install --upgrade setuptools
 sudo -H pip3 install virtualenv
-clear
 echo -e "\e[32m[Fin de instalacion de dependencias]\e[39m"
 #=======================================================================
 
@@ -278,7 +277,6 @@ echo "Ruta de archivo de configuración Ngnix para el sitio: $VAR_PATH_SITE_NGNI
 #=======================================================================
 # Configurar Nginx
 #=======================================================================
-echo -e "\n\e[32mConfigurando Ngnix\e[39m"
 echo -e "\n\e[32mCreando el fichero de configuracion Ngnix para el sitio [$VAR_SITE_NGNIX]\e[39m"
 if [ -f $VAR_SITE_NGNIX ];
 then
@@ -316,8 +314,7 @@ sudo ln -s $VAR_PAHT_SITE_NGNIX /etc/nginx/sites-enabled/$VAR_SITE_NGNIX
 sudo nginx -t
 sudo systemctl restart nginx.service
 sudo systemctl restart $VAR_GUNICORN_SERVICE
-clear
-echo -e "\e[32m[Ngnix configurado correctamente]\e[39m"
+echo -e "\e[32m[Ngnix configuración terminada]\e[39m"
 #=======================================================================
 
 
@@ -493,8 +490,7 @@ then
 		sudo mkdir -p /var/log/phppgadmin
 	fi;
 fi
-clear
-echo -e "\e[32m[Fin de instalacion de bases de datos]\e[39m"
+echo -e "\e[32m[Fin de configuración e instalacion de bases de datos]\e[39m"
 #=======================================================================
 
 
