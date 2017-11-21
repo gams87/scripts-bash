@@ -38,8 +38,7 @@ echo -e "\n\e[32m1. Definicion de variables\e[39m"
 VAR_NEW_PROJECT=0 # 1 => true | 0 => false
 VAR_PROJECT="site-misitio"
 VAR_SITE="misitio"
-VAR_USER=$(who | cut -d' ' -f 1) # Ubuntu
-# VAR_USER=$(who -m | cut -d' ' -f 1) # Debian 
+VAR_USER=$(who -m | cut -d' ' -f 1) # Ubuntu y Debian 
 
 # Variables repositorio
 VAR_REPO_NAME="django-site-example"
@@ -64,7 +63,7 @@ VAR_SITE_PORT="80"
 
 # Base de datos
 VAR_DATABASE_USE=1 # 1 => true 0 => false
-VAR_DATABASE_ENGINE="postgresql"
+VAR_DATABASE_ENGINE="mysql"  # postgresql
 VAR_DATABASE_USER="$VAR_SITE"
 VAR_DATABASE_PASSWORD="123456"
 VAR_DATABASE_PORT_WEB="8081"
