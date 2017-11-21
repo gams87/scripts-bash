@@ -69,8 +69,13 @@ VAR_DATABASE_PASSWORD="123456"
 VAR_DATABASE_PORT_WEB="8081"
 echo -e "\e[32m[Variables definidas correctamente]\e[39m"
 #=======================================================================
-cd ~
-mkdir sites
+if [ -f $VAR_PAHT_PHPPGADMIN_NGNIX ];
+then
+	cd ~
+else
+	cd ~
+	mkdir sites
+fi;
 VAR_PROJECT="sites/$VAR_PROJECT"
 #=======================================================================
 
@@ -142,10 +147,6 @@ then
 	if [ $VAR_DATABASE_ENGINE = "postgresql" ];
 	then
 		sudo apt-get install postgresql postgresql-contrib phppgadmin php7.0 php7.0-fpm -y
-
-		echo -e "CREATE DATABASE $VAR_SITE;"
-		sudo -u postgres psql -c "CREATE DATABASE $VAR_SITE;"
-
 		
 		echo -e ""
 		echo -e "============================================================================"
@@ -154,6 +155,9 @@ then
 		echo -e "============================================================================"
 		sudo -u postgres psql
 		#sudo -u postgres psql -c "CREATE USER $VAR_DATABASE_USER WITH PASSWORD '$VAR_DATABASE_PASWORD';"
+
+		echo -e "CREATE DATABASE $VAR_SITE;"
+		sudo -u postgres psql -c "CREATE DATABASE $VAR_SITE;"
 		
 		echo -e "ALTER ROLE $VAR_DATABASE_USER SET client_encoding TO 'utf8';"
 		sudo -u postgres psql -c "ALTER ROLE $VAR_DATABASE_USER SET client_encoding TO 'utf8';"
