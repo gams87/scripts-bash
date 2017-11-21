@@ -37,7 +37,7 @@ echo -e "\n\e[32m1. Definicion de variables\e[39m"
 # Variables proyecto
 VAR_NEW_PROJECT=0 # 1 => true | 0 => false
 VAR_SITE=$1
-VAR_PROJECT="site-$VAR_SITE"
+VAR_PROJECT="sites/site-$VAR_SITE"
 VAR_USER=$(who -m | cut -d' ' -f 1) # Ubuntu y Debian
 VAR_PATH_SETTINGS_DJANGO="misitio"
 
@@ -69,10 +69,6 @@ VAR_DATABASE_USER="application"
 VAR_DATABASE_PASSWORD="123456"
 VAR_DATABASE_PORT_WEB="8081"
 echo -e "\e[32m[Variables definidas correctamente]\e[39m"
-#=======================================================================
-VAR_PROJECT="sites/$VAR_PROJECT"
-cd ~
-mkdir -p sites
 #=======================================================================
 
 
@@ -223,7 +219,7 @@ then
 		fi;
 
 		sudo ln -s $VAR_PAHT_PHPPGADMIN_NGNIX /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
-		sudo mkdir /var/log/phppgadmin
+		sudo mkdir -p /var/log/phppgadmin
 	fi;
 else
 	echo -e "\e[32mNo ha seleccionado ninguna base de datos para instalar\e[39m"
@@ -237,13 +233,12 @@ echo -e "\e[32m[Fin de instalacion de bases de datos]\e[39m"
 # 6. Configurar virtualenv
 #=======================================================================
 echo -e "\n\e[32m5. Creando y activando virtualenv\e[39m"
-
 if [ -d ~/$VAR_PROJECT ];
 then
 	rm -rf ~/$VAR_PROJECT
 fi;
 
-mkdir ~/$VAR_PROJECT
+mkdir -p ~/$VAR_PROJECT
 cd ~/$VAR_PROJECT
 
 # pyvenv $VAR_PROJECTENV
@@ -277,11 +272,11 @@ else
 	git fetch --all
 	git checkout $VAR_REPO_BRANCH
 
-	if [ $VAR_NEW_PROJECT != $VAR_SITE ];
+	if [ $VAR_REPO_NAME != $VAR_SITE ];
 	then
-		mv VAR_NEW_PROJECT VAR_SITE
+		cd ..
+		mv $VAR_REPO_NAME $VAR_SITE
 	fi;
-	
 	echo -e "\e[32m[Proyecto de Django clonado correctamente]\e[39m"
 fi;
 #=======================================================================
