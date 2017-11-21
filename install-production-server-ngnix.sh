@@ -287,6 +287,7 @@ fi;
 # 8. Crear las migraciones a base de datos
 #=======================================================================
 echo -e "\n\e[32mCreando las migraciones a base de datos\e[39m"
+cd $VAR_SITE
 python manage.py collectstatic
 python manage.py makemigrations
 python manage.py migrate
