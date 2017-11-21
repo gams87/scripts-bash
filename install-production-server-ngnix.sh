@@ -465,6 +465,7 @@ then
 			sudo rm -f /var/www/$VAR_PHPPGADMIN_NAME_FILE
 		fi;
 
+		echo -e "/var/www"
 		sudo ln -s /usr/share/phppgadmin /var/www
 
 		if [ -f $VAR_PHPPGADMIN_NAME_FILE ];
@@ -486,7 +487,7 @@ then
 		echo "		autoindex on;" >> $VAR_PHPPGADMIN_NAME_FILE
 		echo "		try_files \$uri =404;" >> $VAR_PHPPGADMIN_NAME_FILE
 		echo "		fastcgi_split_path_info ^(.+\.php)(/.+)$;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "		fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;" >> $VAR_PHPPGADMIN_NAME_FILE
+		echo "		fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;" >> $VAR_PHPPGADMIN_NAME_FILE
 		echo "		fastcgi_index index.php;" >> $VAR_PHPPGADMIN_NAME_FILE
 		echo "		fastcgi_param SCRIPT_FILENAME /var/www/phppgadmin\$fastcgi_script_name;" >> $VAR_PHPPGADMIN_NAME_FILE
 		echo "		include /etc/nginx/fastcgi_params;" >> $VAR_PHPPGADMIN_NAME_FILE
@@ -506,6 +507,7 @@ then
 			sudo rm -f /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
 		fi;
 
+		echo -e "/etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE"
 		sudo ln -s $VAR_PAHT_PHPPGADMIN_NGNIX /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
 		sudo mkdir -p /var/log/phppgadmin
 	fi;
@@ -550,6 +552,21 @@ if [ $VAR_INPUT = "YES" ];
 then
 	python manage.py makemigrations
 	python manage.py migrate
+
+	echo -e ""
+	echo -n "Desea crear un superusuario para Django [yes/no] (yes): "
+	read VAR_INPUT
+	VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
+
+	if [ -z $VAR_INPUT ];
+	then
+		VAR_INPUT="YES"
+	fi;
+
+	if [ $VAR_INPUT = "YES" ];
+	then
+		python manage.py createsuperuser
+	fi;
 fi;
 
 deactivate
@@ -574,7 +591,7 @@ else
 	echo "Sitio: http://$VAR_DOMAIN_OR_IP:$VAR_SITE_PORT" >> $VAR_FILE_INFO
 fi;
 
-if [ $VAR_DATABASE_USE -eq "1" ];
+if [ $VAR_DATABASE_USE -eq 1 ];
 then
 	if [ $VAR_DATABASE_ENGINE = "mysql" ];
 	then
@@ -582,7 +599,7 @@ then
 		echo "Base de datos: http://<SERVER-IP-OR-DOMAIN>/phpmyadmin" >> $VAR_FILE_INFO
 	fi;
 	
-	if [ $VAR_DATABASE_ENGINE = "postgresql" ];
+	if [ $VAR_DATABASE_ENGINE = "postgre" ];
 	then
 		echo -e "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB"
 		echo "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB" >> $VAR_FILE_INFO
@@ -596,9 +613,13 @@ echo "==========================================================================
 echo "Si realiza algun cambio en los archivos del proyecto Django" >> $VAR_FILE_INFO
 echo "debe reiniciar los servicion de Ngnix y Gunicorn con los siguiente comandos:" >> $VAR_FILE_INFO
 echo ""  >> $VAR_FILE_INFO
-echo "sudo systemctl restart nginx.service"  >> $VAR_FILE_INFO
-echo "sudo systemctl restart $VAR_GUNICORN_SERVICE"  >> $VAR_FILE_INFO
-echo "Para mas información visite: http://gams87.pythonanywhere.com/"  >> $VAR_FILE_INFO
+echo "sudo systemctl restart nginx.service" >> $VAR_FILE_INFO
+echo "sudo systemctl restart $VAR_GUNICORN_SERVICE" >> $VAR_FILE_INFO
+echo "" >> $VAR_FILE_INFO
+echo "" >> $VAR_FILE_INFO
+echo "==========================================================================" >> $VAR_FILE_INFO
+echo "Para mas información visite: http://gams87.pythonanywhere.com/" >> $VAR_FILE_INFO
+echo "==========================================================================" >> $VAR_FILE_INFO
 
 echo -e ""
 echo -e "Si realiza algun cambio en los archivos del proyecto Django debe reiniciar los servicion de Ngnix y Gunicorn con los siguiente comandos:"
