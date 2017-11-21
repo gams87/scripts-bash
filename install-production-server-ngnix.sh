@@ -97,7 +97,8 @@ echo -e "\e[32m[Fin de instalacion de dependencias]\e[39m"
 # Usuario (Owner)
 # ============================================================================
 VAR_USER=$(who -m | cut -d' ' -f 1) # Ubuntu y Debian
-echo -n "Digite el nombre de usuario ($VAR_USER): "
+echo -e ""
+echo -n "Digite el nombre del usuario del sitema actual ($VAR_USER): "
 read VAR_USER
 VAR_USER=${VAR_USER,,}  # Minisculas
 
@@ -131,7 +132,7 @@ echo "=====================================" >> $VAR_FILE_INFO
 echo "Información General del Proyecto" >> $VAR_FILE_INFO
 echo "=====================================" >> $VAR_FILE_INFO
 echo "Usuario (Owner): $VAR_USER" >> $VAR_FILE_INFO
-echo "Nombre: $VAR_SITE" >> $VAR_FILE_INFO
+echo "Nombre del sitio: $VAR_SITE" >> $VAR_FILE_INFO
 echo "Ruta del proyecto: $VAR_PROJECT" >> $VAR_FILE_INFO
 echo "Ruta de Virtualenv: $VAR_VIRTUALENV" >> $VAR_FILE_INFO
 echo "Servicio Gunicorn: $VAR_GUNICORN_SERVICE" >> $VAR_FILE_INFO
@@ -192,9 +193,6 @@ else
 	VAR_REPO_NAME=$(ls | head -1)
 	echo "Proyecto nuevo: Si" >> $VAR_FILE_INFO
 fi;
-
-VAR_PATH_SETTINGS_DJANGO=$(find $VAR_PROJECT/ -name 'settings.py')
-echo "Ruta del archivo settings.py: $VAR_PATH_SETTINGS_DJANGO" >> $VAR_FILE_INFO
 #=======================================================================
 
 
@@ -224,6 +222,17 @@ then
 	sudo rm -f $VAR_GUNICORN_SERVICE
 fi;
 
+VAR_PATH_SETTINGS_DJANGO=$(find $VAR_PROJECT/$VAR_SITE -name 'settings.py')
+VAR_SUS=""
+VAR_RESULT="${VAR_1/settings.py/$VAR_SUS}"
+VAR_PATH="$VAR_PROJECT/$VAR_SITE"
+VAR_PATH_MODULE="${VAR_RESULT/$VAR_PATH/$VAR_SUS}"
+VAR_PATH_MODULE="${VAR_PATH_MODULE/\//$VAR_SUS}"
+VAR_PATH_MODULE="${VAR_PATH_MODULE/\//$VAR_SUS}"
+
+echo "Ruta del archivo settings.py: $VAR_PATH_SETTINGS_DJANGO" >> $VAR_FILE_INFO
+echo "Módulo de sitio Django: $VAR_PATH_MODULE" >> $VAR_FILE_INFO
+
 touch $VAR_GUNICORN_SERVICE
 echo "[Unit]" > $VAR_GUNICORN_SERVICE
 echo "Description=gunicorn daemon $VAR_SITE" >> $VAR_GUNICORN_SERVICE
@@ -233,7 +242,7 @@ echo "[Service]" >> $VAR_GUNICORN_SERVICE
 echo "User=$VAR_USER" >> $VAR_GUNICORN_SERVICE
 echo "Group=www-data" >> $VAR_GUNICORN_SERVICE
 echo "WorkingDirectory=$VAR_PROJECT/$VAR_SITE" >> $VAR_GUNICORN_SERVICE
-echo "ExecStart=$VAR_VIRTUALENV/bin/gunicorn --workers 3 --bind unix:$VAR_PROJECT/$VAR_SITE.sock $VAR_SITE.wsgi:application" >> $VAR_GUNICORN_SERVICE
+echo "ExecStart=$VAR_VIRTUALENV/bin/gunicorn --workers 3 --bind unix:$VAR_PROJECT/$VAR_SITE.sock $VAR_PATH_MODULE.wsgi:application" >> $VAR_GUNICORN_SERVICE
 echo "" >> $VAR_GUNICORN_SERVICE
 echo "[Install]" >> $VAR_GUNICORN_SERVICE
 echo "WantedBy=multi-user.target" >> $VAR_GUNICORN_SERVICE
@@ -508,10 +517,6 @@ echo -e "\e[32m[Fin de configuración e instalacion de bases de datos]\e[39m"
 #=======================================================================
 # Crear las migraciones a base de datos
 #=======================================================================
-echo -e "\n\e[32mMigraciones de base de datos y collectstatic\e[39m"
-cd $VAR_PROJECT/$VAR_SITE
-python manage.py collectstatic
-
 echo -e ""
 echo -n "Desea configurar el archivo settings.py del proyecto Django [yes/no] (no): "
 read VAR_INPUT
@@ -527,7 +532,10 @@ then
 	nano $VAR_PATH_SETTINGS_DJANGO
 fi;
 
-echo -e ""
+echo -e "\n\e[32mMigraciones de base de datos y collectstatic\e[39m"
+cd $VAR_PROJECT/$VAR_SITE
+python manage.py collectstatic
+
 echo -n "Desea ejecutar las migraciones de base de datos [yes/no] (yes): "
 read VAR_INPUT
 VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
@@ -559,10 +567,10 @@ echo "=====================================" >> $VAR_FILE_INFO
 if [ $VAR_SITE_PORT = "80" ];
 then
 	echo -e "Sitio web: http://$VAR_DOMAIN_OR_IP"
-	echo "Dirección web del sitio: http://$VAR_DOMAIN_OR_IP" >> $VAR_FILE_INFO
+	echo "Sitio: http://$VAR_DOMAIN_OR_IP" >> $VAR_FILE_INFO
 else
 	echo -e "Sitio web: http://$VAR_DOMAIN_OR_IP:$VAR_SITE_PORT"
-	echo "Dirección web del sitio: http://$VAR_DOMAIN_OR_IP:$VAR_SITE_PORT" >> $VAR_FILE_INFO
+	echo "Sitio: http://$VAR_DOMAIN_OR_IP:$VAR_SITE_PORT" >> $VAR_FILE_INFO
 fi;
 
 if [ $VAR_DATABASE_USE -eq "1" ];
@@ -570,13 +578,13 @@ then
 	if [ $VAR_DATABASE_ENGINE = "mysql" ];
 	then
 		echo -e "http://<SERVER-IP-OR-DOMAIN>/phpmyadmin"
-		echo "Dirección web de base de datos: http://<SERVER-IP-OR-DOMAIN>/phpmyadmin" >> $VAR_FILE_INFO
+		echo "Base de datos: http://<SERVER-IP-OR-DOMAIN>/phpmyadmin" >> $VAR_FILE_INFO
 	fi;
 	
 	if [ $VAR_DATABASE_ENGINE = "postgresql" ];
 	then
 		echo -e "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB"
-		echo "Dirección web de base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB" >> $VAR_FILE_INFO
+		echo "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB" >> $VAR_FILE_INFO
 	fi;
 fi;
 #=======================================================================
@@ -585,15 +593,14 @@ echo -e "\n\e[32mFelicidades! Script ejecutado correctamente\e[39m"
 echo ""  >> $VAR_FILE_INFO
 echo "==========================================================================" >> $VAR_FILE_INFO
 echo "Si realiza algun cambio en los archivos del proyecto Django" >> $VAR_FILE_INFO
-echo "reiniciar los servicion de Ngnix y Gunicorn" >> $VAR_FILE_INFO
-echo "con los siguiente comandos" >> $VAR_FILE_INFO
+echo "debe reiniciar los servicion de Ngnix y Gunicorn con los siguiente comandos:" >> $VAR_FILE_INFO
 echo ""  >> $VAR_FILE_INFO
 echo "sudo systemctl restart nginx.service"  >> $VAR_FILE_INFO
 echo "sudo systemctl restart $VAR_GUNICORN_SERVICE"  >> $VAR_FILE_INFO
 echo "Para mas información visite: http://gams87.pythonanywhere.com/"  >> $VAR_FILE_INFO
 
 echo -e ""
-echo -e "Si realiza algun cambio en los archivos del proyecto Django reiniciar los servicion de Ngnix y Gunicorn con los siguiente comandos:"
+echo -e "Si realiza algun cambio en los archivos del proyecto Django debe reiniciar los servicion de Ngnix y Gunicorn con los siguiente comandos:"
 echo -e "sudo systemctl restart nginx.service"
 echo -e "sudo systemctl restart $VAR_GUNICORN_SERVICE"
 echo -e ""
