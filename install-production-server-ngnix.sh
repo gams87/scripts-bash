@@ -257,7 +257,7 @@ echo -e "\e[32m[Servicio Gunicorn creado e iniciado correctamente]\e[39m"
 #=======================================================================
 # Configurar Nginx
 #=======================================================================
-echo -e "\n\e[32mCreando el fichero de configuracion Ngnix para el sitio [$VAR_SITE_NGNIX]\e[39m"
+echo -e "\n\e[32mCreando el fichero de configuracion Ngnix\e[39m"
 echo "" >> $VAR_FILE_INFO
 echo "=====================================" >> $VAR_FILE_INFO
 echo "Información de Nginx" >> $VAR_FILE_INFO
@@ -379,11 +379,11 @@ then
 	echo "Base de datos: $VAR_PATH_SITE_NGNIX" >> $VAR_FILE_INFO
 	echo "Usuario: $VAR_DATABASE_USER" >> $VAR_FILE_INFO
 
+	sudo apt-get install php php-fpm php-cli php-common php-mbstring php-gd php-intl php-xml php-mcrypt php-zip -y
 	
 	if [ $VAR_DATABASE_ENGINE = "mysql" ];
 	then
-		sudo -H pip3 install mysql-connector
-		sudo apt-get install mysql-server phpmyadmin -y
+		sudo apt-get install mysql-server php-mysql phpmyadmin -y
 		sudo php5enmod mcrypt
 		sudo service php5-fpm restart
 		sudo ln -s /usr/share/phpmyadmin /usr/share/nginx/html
@@ -401,7 +401,7 @@ then
 	
 	if [ $VAR_DATABASE_ENGINE = "postgres" ];
 	then
-		sudo apt-get install postgresql postgresql-contrib phppgadmin php7.0 php7.0-fpm -y
+		sudo apt-get install postgresql postgresql-contrib phppgadmin -y
 		
 		echo -e ""
 		echo -e "============================================================================"
