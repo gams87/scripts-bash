@@ -65,7 +65,7 @@ VAR_SITE_PORT="80"
 # Base de datos
 VAR_DATABASE_USE=1 # 1 => true 0 => false
 VAR_DATABASE_ENGINE="postgresql"
-VAR_DATABASE_USER=$VAR_SITE
+VAR_DATABASE_USER="juan"
 VAR_DATABASE_PASSWORD="123456"
 VAR_DATABASE_PORT_WEB="8081"
 echo -e "\e[32m[Variables definidas correctamente]\e[39m"
