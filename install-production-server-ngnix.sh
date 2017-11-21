@@ -70,14 +70,8 @@ VAR_DATABASE_PORT_WEB="8081"
 echo -e "\e[32m[Variables definidas correctamente]\e[39m"
 #=======================================================================
 VAR_PROJECT="sites/$VAR_PROJECT"
-
-if [ -f $VAR_PAHT_PHPPGADMIN_NGNIX ];
-then
-	cd ~
-else
-	cd ~
-	mkdir sites
-fi;
+cd ~
+mkdir -p sites
 #=======================================================================
 
 
