@@ -224,7 +224,7 @@ fi;
 
 VAR_PATH_SETTINGS_DJANGO=$(find $VAR_PROJECT/$VAR_SITE -name 'settings.py')
 VAR_SUS=""
-VAR_RESULT="${VAR_1/settings.py/$VAR_SUS}"
+VAR_RESULT="${VAR_PATH_SETTINGS_DJANGO/settings.py/$VAR_SUS}"
 VAR_PATH="$VAR_PROJECT/$VAR_SITE"
 VAR_PATH_MODULE="${VAR_RESULT/$VAR_PATH/$VAR_SUS}"
 VAR_PATH_MODULE="${VAR_PATH_MODULE/\//$VAR_SUS}"
@@ -536,6 +536,7 @@ echo -e "\n\e[32mMigraciones de base de datos y collectstatic\e[39m"
 cd $VAR_PROJECT/$VAR_SITE
 python manage.py collectstatic
 
+echo -e ""
 echo -n "Desea ejecutar las migraciones de base de datos [yes/no] (yes): "
 read VAR_INPUT
 VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
@@ -604,4 +605,9 @@ echo -e "Si realiza algun cambio en los archivos del proyecto Django debe reinic
 echo -e "sudo systemctl restart nginx.service"
 echo -e "sudo systemctl restart $VAR_GUNICORN_SERVICE"
 echo -e ""
+echo "=========================================================================="
 echo "Para mas información visite: http://gams87.pythonanywhere.com/"
+echo "=========================================================================="
+echo -e ""
+echo -e ""
+echo -e ""
