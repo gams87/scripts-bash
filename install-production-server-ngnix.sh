@@ -21,7 +21,7 @@
 #	5. Instalacion de base de datos
 #	6. Crear y activar virtualenv
 #	7. Crear o clonar projecto de Django
-#	8. Desactivar virtualenv
+#	8. Crear las migraciones a base de datos
 #	9. Crear e iniciar servicio para Gunicorn
 #	10. Configurar Nginx
 #	11. Mensaje de ejecucion
@@ -42,7 +42,7 @@ VAR_USER=$(who | cut -d' ' -f 1) # Ubuntu
 # VAR_USER=$(who -m | cut -d' ' -f 1) # Debian 
 
 # Variables repositorio
-VAR_REPO_NAME="misitio"
+VAR_REPO_NAME="django-site-example"
 VAR_REPO_ORIGIN="https://github.com/gams87/django-site-example.git"
 VAR_REPO_BRANCH="master"
 
@@ -63,10 +63,10 @@ VAR_DOMAIN_OR_IP="$VAR_SITE.com"
 VAR_SITE_PORT="80"
 
 # Base de datos
-VAR_DATABASE_USE=0 # 1 => true 0 => false
+VAR_DATABASE_USE=1 # 1 => true 0 => false
 VAR_DATABASE_ENGINE="postgresql"
 VAR_DATABASE_USER=$VAR_SITE
-VAR_DATABASE_PASSWORD="mipasswd"
+VAR_DATABASE_PASSWORD="123456"
 VAR_DATABASE_PORT_WEB="8081"
 echo -e "\e[32m[Variables definidas correctamente]\e[39m"
 #=======================================================================
@@ -257,7 +257,6 @@ else
 	cd $VAR_REPO_NAME
 	git fetch --all
 	git checkout $VAR_REPO_BRANCH
-	cd ..
 	echo -e "\e[32m[Proyecto de Django clonado correctamente]\e[39m"
 fi;
 #=======================================================================
@@ -265,11 +264,15 @@ fi;
 
 
 #=======================================================================
-# 8. Desactivar virtualenv
+# 8. Crear las migraciones a base de datos
 #=======================================================================
-echo -e "\n\e[32m8. Desactivando virtualenv\e[39m"
+echo -e "\n\e[32m8. Creando las migraciones a base de datos\e[39m"
+python manage.py collectstatic
+python manage.py makemigrations
+python manage.py migrate
+cd ..
 deactivate
-echo -e "\e[32m[Virtualenv desactivado correctamente]\e[39m"
+echo -e "\e[32m[Migraciones a base de datos correctamente]\e[39m"
 #=======================================================================
 
 
