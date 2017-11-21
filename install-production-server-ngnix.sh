@@ -32,7 +32,7 @@
 #=======================================================================
 # 1. Definicion de variables
 #=======================================================================
-echo -e "\n\e[32m1. Definicion de variables\e[39m"
+echo -e "\n\e[32mDefinicion de variables\e[39m"
 
 # Variables proyecto
 VAR_NEW_PROJECT=0 # 1 => true | 0 => false
@@ -168,7 +168,7 @@ then
 		
 		# sudo -u postgres psql
 
-		echo -e "\n\e[32m3. Configurando phppgadmin\e[39m"
+		echo -e "\n\e[32mConfigurando phppgadmin\e[39m"
 		VAR_PHPPGADMIN_NAME_FILE="phppgadmin.conf"
 		VAR_PAHT_PHPPGADMIN_NGNIX="$VAR_PAHT_NGNIX/$VAR_PHPPGADMIN_NAME_FILE"
 		
