@@ -38,9 +38,10 @@ echo -e "\n\e[32m1. Definicion de variables\e[39m"
 VAR_NEW_PROJECT=0 # 1 => true | 0 => false
 VAR_SITE=$1
 VAR_PROJECT="site-$VAR_SITE"
-VAR_USER=$(who -m | cut -d' ' -f 1) # Ubuntu y Debian 
+VAR_USER=$(who -m | cut -d' ' -f 1) # Ubuntu y Debian
+VAR_PATH_SETTINGS_DJANGO="misitio"
 
-# Variables repositorio
+# Variables repositorio solo necesarias si VAR_NEW_PROJECT=0
 VAR_REPO_NAME="django-site-example"
 VAR_REPO_ORIGIN="https://github.com/gams87/django-site-example.git"
 VAR_REPO_BRANCH="master"
@@ -275,6 +276,12 @@ else
 	cd $VAR_REPO_NAME
 	git fetch --all
 	git checkout $VAR_REPO_BRANCH
+
+	if [ $VAR_NEW_PROJECT != $VAR_SITE ];
+	then
+		mv VAR_NEW_PROJECT VAR_SITE
+	fi;
+	
 	echo -e "\e[32m[Proyecto de Django clonado correctamente]\e[39m"
 fi;
 #=======================================================================
@@ -313,7 +320,7 @@ echo "[Service]" >> $VAR_GUNICORN_SERVICE
 echo "User=$VAR_USER" >> $VAR_GUNICORN_SERVICE
 echo "Group=www-data" >> $VAR_GUNICORN_SERVICE
 echo "WorkingDirectory=/home/$VAR_USER/$VAR_PROJECT/$VAR_SITE" >> $VAR_GUNICORN_SERVICE
-echo "ExecStart=/home/$VAR_USER/$VAR_PROJECT/$VAR_PROJECTENV/bin/gunicorn --workers 3 --bind unix:/home/$VAR_USER/$VAR_PROJECT/$VAR_SITE.sock $VAR_SITE.wsgi:application" >> $VAR_GUNICORN_SERVICE
+echo "ExecStart=/home/$VAR_USER/$VAR_PROJECT/$VAR_PROJECTENV/bin/gunicorn --workers 3 --bind unix:/home/$VAR_USER/$VAR_PROJECT/$VAR_SITE.sock $VAR_PATH_SETTINGS_DJANGO.wsgi:application" >> $VAR_GUNICORN_SERVICE
 echo "" >> $VAR_GUNICORN_SERVICE
 echo "[Install]" >> $VAR_GUNICORN_SERVICE
 echo "WantedBy=multi-user.target" >> $VAR_GUNICORN_SERVICE
