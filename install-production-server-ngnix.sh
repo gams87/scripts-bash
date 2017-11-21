@@ -47,7 +47,7 @@ VAR_REPO_ORIGIN="https://github.com/gams87/django-site-example.git"
 VAR_REPO_BRANCH="master"
 
 # Variables virtualenv
-VAR_DEPENDENCIES="pillow psycopg2 mysql-connector"
+VAR_DEPENDENCIES="pillow psycopg2"
 VAR_ENV="-env"
 VAR_PROJECTENV=$VAR_SITE$VAR_ENV
 
@@ -123,10 +123,20 @@ if [ $VAR_DATABASE_USE -eq 1 ];
 then
 	if [ $VAR_DATABASE_ENGINE = "mysql" ];
 	then
-		sudo apt-get install mysql-server -y
-		sudo mysql_secure_installation
+		sudo -H pip3 install mysql-connector
+		sudo apt-get install mysql-server phpmyadmin -y
 		echo -e "CREATE DATABASE $VAR_SITE CHARACTER SET utf8;"
-		mysql -u root -e "CREATE DATABASE '$VAR_SITE' CHARACTER SET utf8;"
+		mysql -uroot -e "CREATE DATABASE '$VAR_SITE' CHARACTER SET utf8;"
+		echo -e "CREATE USER '$VAR_DATABASE_USER'@'localhost' IDENTIFIED BY 'VAR_DATABASE_PASSWORD';"
+		mysql -uroot -e "CREATE USER '$VAR_DATABASE_USER'@'localhost' IDENTIFIED BY 'VAR_DATABASE_PASSWORD';"
+		echo -e "GRANT ALL PRIVILEGES ON * . * TO '$VAR_DATABASE_USER'@'localhost';"
+		mysql -uroot -e "GRANT ALL PRIVILEGES ON * . * TO '$VAR_DATABASE_USER'@'localhost';"
+		echo -e "FLUSH PRIVILEGES;"
+		mysql -uroot -e "FLUSH PRIVILEGES;"
+		sudo php5enmod mcrypt
+		sudo service php5-fpm restart
+		sudo ln -s /usr/share/phpmyadmin /usr/share/nginx/html
+		sudo mysql_secure_installation
 	fi;
 	
 	if [ $VAR_DATABASE_ENGINE = "postgresql" ];
@@ -373,6 +383,14 @@ fi;
 
 if [ $VAR_DATABASE_USE -eq 1 ];
 then
-	echo -e "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB"
+	if [ $VAR_DATABASE_ENGINE = "mysql" ];
+	then
+		http://<SERVER-IP-OR-DOMAIN>/phpmyadmin
+	fi;
+	
+	if [ $VAR_DATABASE_ENGINE = "postgresql" ];
+	then
+		echo -e "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB"
+	fi;
 fi;
 #=======================================================================
