@@ -459,13 +459,12 @@ then
 
 		VAR_PHPPGADMIN_NAME_FILE="phppgadmin.conf"
 		VAR_PAHT_PHPPGADMIN_NGNIX="$VAR_PAHT_NGNIX/$VAR_PHPPGADMIN_NAME_FILE"
-		
-		if [ -h "/var/www/$VAR_PHPPGADMIN_NAME_FILE" ];
+
+		if [ -h "/var/www/phppgadmin" ];
 		then
-			sudo rm -f /var/www/$VAR_PHPPGADMIN_NAME_FILE
+			sudo rm -f /var/www/phppgadmin
 		fi;
 
-		echo -e "/var/www"
 		sudo ln -s /usr/share/phppgadmin /var/www
 
 		if [ -f $VAR_PHPPGADMIN_NAME_FILE ];
@@ -507,7 +506,6 @@ then
 			sudo rm -f /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
 		fi;
 
-		echo -e "/etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE"
 		sudo ln -s $VAR_PAHT_PHPPGADMIN_NGNIX /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
 		sudo mkdir -p /var/log/phppgadmin
 	fi;
@@ -599,7 +597,7 @@ then
 		echo "Base de datos: http://<SERVER-IP-OR-DOMAIN>/phpmyadmin" >> $VAR_FILE_INFO
 	fi;
 	
-	if [ $VAR_DATABASE_ENGINE = "postgre" ];
+	if [ $VAR_DATABASE_ENGINE = "postgres" ];
 	then
 		echo -e "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB"
 		echo "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB" >> $VAR_FILE_INFO
