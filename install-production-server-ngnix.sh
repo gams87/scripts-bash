@@ -203,9 +203,9 @@ pip install --upgrade pip
 pip3 install --upgrade pip
 pip3 install django gunicorn
 
-if [ -f $VAR_HOME/requirements.txt ];
+if [ -f $VAR_PROJECT/$VAR_SITE/requirements.txt ];
 then
-	pip3 install -r $VAR_HOME/requirements.txt
+	pip3 install -r $VAR_PROJECT/$VAR_SITE/requirements.txt
 fi;
 echo -e "\e[32m[Virtualenv configurada correctamente]\e[39m"
 #=======================================================================
