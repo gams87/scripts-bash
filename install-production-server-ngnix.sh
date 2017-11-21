@@ -44,7 +44,6 @@ fi;
 if [ $VAR_INPUT = "YES" ];
 then
 	sudo apt-get update && sudo apt-get upgrade -y
-	clear
 fi;
 echo -e "\e[32m[Fin de actualizacion del servidor]\e[39m" 
 #=======================================================================
@@ -69,7 +68,6 @@ then
 	export LC_CTYPE="es_CR.UTF-8"
 	sudo dpkg-reconfigure locales
 	echo -e "\e[32m[Fin de configuracion de locale]\e[39m"
-	clear
 fi;
 #=======================================================================
 
@@ -77,7 +75,7 @@ fi;
 #=======================================================================
 # Instalacion de las dependencias
 #=======================================================================
-echo -e "\n\e[32mInstalando paquetes\e[39m"
+echo -e "\n\e[32mInstalando dependencias\e[39m"
 sudo apt-get install libjpeg-dev libpq-dev build-essential libssl-dev libffi-dev libmysqlclient-dev -y
 sudo apt-get install python3-pip python3-venv python3-dev -y
 sudo apt-get install nginx -y
@@ -87,7 +85,7 @@ sudo -H pip3 install setuptools
 sudo -H pip3 install --upgrade setuptools
 sudo -H pip3 install virtualenv
 clear
-echo -e "\e[32m[Fin de instalacion de paquetes]\e[39m"
+echo -e "\e[32m[Fin de instalacion de dependencias]\e[39m"
 #=======================================================================
 
 
@@ -332,7 +330,7 @@ echo "=====================================" >> $VAR_FILE_INFO
 echo "Información de Base de datos" >> $VAR_FILE_INFO
 echo "=====================================" >> $VAR_FILE_INFO
 
-echo -n "Desea configurar una base de datos [yes/no]: (no)"
+echo -n "Desea configurar una base de datos [yes/no] (no): "
 read VAR_INPUT
 VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
 
@@ -401,7 +399,7 @@ then
 		mysql -u root -p
 	fi;
 	
-	if [ $VAR_DATABASE_ENGINE = "postgresql" ];
+	if [ $VAR_DATABASE_ENGINE = "postgres" ];
 	then
 		sudo apt-get install postgresql postgresql-contrib phppgadmin php7.0 php7.0-fpm -y
 		
