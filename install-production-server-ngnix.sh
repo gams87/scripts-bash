@@ -52,7 +52,8 @@ echo -e "\e[32m[Fin de actualizacion del servidor]\e[39m"
 #=======================================================================
 # Configurar locales
 #=======================================================================
-echo -n "\nDesea configurar los locales [yes/no] (yes): "
+echo -e ""
+echo -n "Desea configurar el locale [yes/no] (yes): "
 read VAR_INPUT
 VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
 
@@ -253,9 +254,10 @@ echo -e "\e[32m[Servicio Gunicorn creado e iniciado correctamente]\e[39m"
 #=======================================================================
 
 
-# ============================================================================
-# Variables Nginx
-# ============================================================================
+#=======================================================================
+# Configurar Nginx
+#=======================================================================
+echo -e "\n\e[32mCreando el fichero de configuracion Ngnix para el sitio [$VAR_SITE_NGNIX]\e[39m"
 echo "" >> $VAR_FILE_INFO
 echo "=====================================" >> $VAR_FILE_INFO
 echo "Información de Nginx" >> $VAR_FILE_INFO
@@ -264,7 +266,6 @@ echo "=====================================" >> $VAR_FILE_INFO
 VAR_SITE_NGNIX="$VAR_SITE.conf"
 VAR_PATH_NGNIX="/etc/nginx/sites-available"
 VAR_PATH_SITE_NGNIX="$VAR_PATH_NGNIX/$VAR_SITE_NGNIX"
-
 
 echo -n "Digite la ip o el dominio del sitio: "
 read VAR_DOMAIN_OR_IP
@@ -280,10 +281,6 @@ fi;
 
 echo "Ruta de archivo de configuración Ngnix para el sitio: $VAR_PATH_SITE_NGNIX" >> $VAR_FILE_INFO
 
-#=======================================================================
-# Configurar Nginx
-#=======================================================================
-echo -e "\n\e[32mCreando el fichero de configuracion Ngnix para el sitio [$VAR_SITE_NGNIX]\e[39m"
 if [ -f $VAR_SITE_NGNIX ];
 then
 	sudo rm -f $VAR_SITE_NGNIX
@@ -308,7 +305,7 @@ then
 	sudo rm -f $VAR_PAHT_SITE_NGNIX
 fi;
 
-sudo cp $VAR_SITE_NGNIX $VAR_PAHT_SITE_NGNIX
+sudo cp $VAR_SITE_NGNIX $VAR_PATH_SITE_NGNIX
 sudo rm $VAR_SITE_NGNIX
 
 if [ -h /etc/nginx/sites-enabled/$VAR_SITE_NGNIX ];
@@ -316,7 +313,7 @@ then
 	sudo rm -f /etc/nginx/sites-enabled/$VAR_SITE_NGNIX
 fi;
 
-sudo ln -s $VAR_PAHT_SITE_NGNIX /etc/nginx/sites-enabled/$VAR_SITE_NGNIX
+sudo ln -s $VAR_PATH_SITE_NGNIX /etc/nginx/sites-enabled/$VAR_SITE_NGNIX
 sudo nginx -t
 sudo systemctl restart nginx.service
 sudo systemctl restart $VAR_GUNICORN_SERVICE
