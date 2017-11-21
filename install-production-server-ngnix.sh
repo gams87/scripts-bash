@@ -36,8 +36,8 @@ echo -e "\n\e[32m1. Definicion de variables\e[39m"
 
 # Variables proyecto
 VAR_NEW_PROJECT=0 # 1 => true | 0 => false
-VAR_PROJECT="site-misitio"
-VAR_SITE="misitio"
+VAR_SITE=$1
+VAR_PROJECT="site-$VAR_SITE"
 VAR_USER=$(who -m | cut -d' ' -f 1) # Ubuntu y Debian 
 
 # Variables repositorio
@@ -63,7 +63,7 @@ VAR_SITE_PORT="80"
 
 # Base de datos
 VAR_DATABASE_USE=1 # 1 => true 0 => false
-VAR_DATABASE_ENGINE="mysql"  # postgresql
+VAR_DATABASE_ENGINE="postgresql"  # mysql
 VAR_DATABASE_USER="$VAR_SITE"
 VAR_DATABASE_PASSWORD="123456"
 VAR_DATABASE_PORT_WEB="8081"
@@ -101,7 +101,7 @@ echo -e "\e[32m[Fin de configuracion de locale]\e[39m"
 # 4. Instalacion de las dependencias
 #=======================================================================
 echo -e "\n\e[32m3. Instalando paquetes\e[39m"
-sudo apt-get install libjpeg-dev libpq-dev build-essential libssl-dev libffi-dev -y
+sudo apt-get install libjpeg-dev libpq-dev build-essential libssl-dev libffi-dev libmysqlclient-dev -y
 sudo apt-get install python3-pip python3-venv python3-dev -y
 sudo apt-get install nginx -y
 sudo -H pip3 install --upgrade pip
@@ -124,18 +124,19 @@ then
 	then
 		sudo -H pip3 install mysql-connector
 		sudo apt-get install mysql-server phpmyadmin -y
-		echo -e "CREATE DATABASE $VAR_SITE CHARACTER SET utf8;"
-		mysql -uroot -e "CREATE DATABASE '$VAR_SITE' CHARACTER SET utf8;"
-		echo -e "CREATE USER '$VAR_DATABASE_USER'@'localhost' IDENTIFIED BY '$VAR_DATABASE_PASSWORD';"
-		mysql -uroot -e "CREATE USER '$VAR_DATABASE_USER'@'localhost' IDENTIFIED BY '$VAR_DATABASE_PASSWORD';"
-		echo -e "GRANT ALL PRIVILEGES ON * . * TO '$VAR_DATABASE_USER'@'localhost';"
-		mysql -uroot -e "GRANT ALL PRIVILEGES ON * . * TO '$VAR_DATABASE_USER'@'localhost';"
-		echo -e "FLUSH PRIVILEGES;"
-		mysql -uroot -e "FLUSH PRIVILEGES;"
 		sudo php5enmod mcrypt
 		sudo service php5-fpm restart
 		sudo ln -s /usr/share/phpmyadmin /usr/share/nginx/html
 		sudo mysql_secure_installation
+		echo -e ""
+		echo -e "============================================================================"
+		echo -e "Digite o copie y pegue las siguientes lineas y presione enter =>"
+		echo -e "CREATE DATABASE $VAR_SITE CHARACTER SET utf8;"
+		echo -e "CREATE USER '$VAR_DATABASE_USER'@'localhost' IDENTIFIED BY '$VAR_DATABASE_PASSWORD';"
+		echo -e "GRANT ALL PRIVILEGES ON * . * TO '$VAR_DATABASE_USER'@'localhost';"
+		echo -e "FLUSH PRIVILEGES;"
+		echo -e "============================================================================"
+		mysql -u root -p
 	fi;
 	
 	if [ $VAR_DATABASE_ENGINE = "postgresql" ];
