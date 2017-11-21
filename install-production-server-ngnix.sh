@@ -39,6 +39,11 @@ VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
 if [ -z $VAR_INPUT ];
 then
 	VAR_INPUT="YES"
+else
+	if [ $VAR_INPUT != "NO" ];
+	then
+		VAR_INPUT="YES"
+	fi;
 fi;
 
 if [ $VAR_INPUT = "YES" ];
@@ -92,7 +97,7 @@ echo -e "\e[32m[Fin de instalacion de dependencias]\e[39m"
 #=======================================================================
 # Definicion de variables
 #=======================================================================
-echo -e "\n\e[32mDefinicion de variables\e[39m"
+echo -e "\n\e[32mVariables para el proyecto Django\e[39m"
 
 # ============================================================================
 # Usuario (Owner)
@@ -195,9 +200,11 @@ else
 fi;
 
 VAR_PATH_SETTINGS_DJANGO=$(find $VAR_PROJECT/ -name 'settings.py')
-VAR_PATH_SETTINGS_DJANGO="$VAR_PATH_SETTINGS_DJANGO"
 
 echo "Ruta del archivo settings.py: $VAR_PATH_SETTINGS_DJANGO" >> $VAR_FILE_INFO
+echo -e "\e[32m[Fin de configuración de variables para el proyecto Django]\e[39m"
+#=======================================================================
+
 
 #=======================================================================
 # Configurar virtualenv
@@ -279,7 +286,7 @@ then
 	VAR_SITE_PORT="80"
 fi;
 
-echo "Ruta de archivo de configuración Ngnix para el sitio: $VAR_PATH_SITE_NGNIX" >> $VAR_FILE_INFO
+echo "Ruta de archivo de configuración del sitio: $VAR_PATH_SITE_NGNIX" >> $VAR_FILE_INFO
 
 if [ -f $VAR_SITE_NGNIX ];
 then
@@ -375,9 +382,18 @@ then
 		VAR_DATABASE_USER=$VAR_SITE
 	fi;
 
+	echo -n "Digite el password de la base de datos para el usuario $VAR_DATABASE_USER: "
+	read VAR_DATABASE_PASSWORD
+
+	if [ -z $VAR_DATABASE_PASSWORD ];
+	then
+		VAR_DATABASE_PASSWORD=$VAR_SITE
+	fi;
+
 	echo "Motor: $VAR_DATABASE_ENGINE" >> $VAR_FILE_INFO
 	echo "Base de datos: $VAR_PATH_SITE_NGNIX" >> $VAR_FILE_INFO
 	echo "Usuario: $VAR_DATABASE_USER" >> $VAR_FILE_INFO
+	echo "Contraseña: $VAR_DATABASE_PASSWORD" >> $VAR_FILE_INFO
 
 	sudo apt-get install php php-fpm php-cli php-common php-mbstring php-gd php-intl php-xml php-mcrypt php-zip -y
 	
@@ -406,7 +422,7 @@ then
 		echo -e ""
 		echo -e "============================================================================"
 		echo -e "Ejecute el siguiente comando (\\q => Para salir):"
-		echo -e "CREATE USER $VAR_DATABASE_USER WITH PASSWORD '$VAR_DATABASE_PASSWORD';" \\q
+		echo -e "CREATE USER $VAR_DATABASE_USER WITH PASSWORD '$VAR_DATABASE_PASSWORD';"
 		echo -e "============================================================================"
 		sudo -u postgres psql
 		# sudo -u postgres psql -c "CREATE USER $VAR_DATABASE_USER WITH PASSWORD '$VAR_DATABASE_PASWORD';"
@@ -504,6 +520,22 @@ echo -e "\n\e[32mMigraciones de base de datos y collectstatic\e[39m"
 cd $VAR_PROJECT/$VAR_SITE
 python manage.py collectstatic
 
+echo -e ""
+echo -n "Desea configurar el archivo settings.py del proyecto Django [yes/no] (no): "
+read VAR_INPUT
+VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
+
+if [ -z $VAR_INPUT ];
+then
+	VAR_INPUT="NO"
+fi;
+
+if [ $VAR_SITE_PORT = "YES" ];
+then
+	nano $VAR_PATH_SETTINGS_DJANGO
+fi;
+
+echo -e ""
 echo -n "Desea ejecutar las migraciones de base de datos [yes/no] (yes): "
 read VAR_INPUT
 VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
@@ -513,14 +545,13 @@ then
 	VAR_INPUT="YES"
 fi;
 
-if [ $VAR_SITE_PORT = "YES" ];
+if [ $VAR_INPUT = "YES" ];
 then
 	python manage.py makemigrations
 	python manage.py migrate
 fi;
 
 deactivate
-clear
 echo -e "\n\e[32mFin de migraciones de base de datos y collectstatic\e[39m"
 #=======================================================================
 
@@ -530,7 +561,7 @@ echo -e "\n\e[32mFin de migraciones de base de datos y collectstatic\e[39m"
 echo -e "\n\e[32mFelicidades! Script ejecutado correctamente\e[39m"
 echo ""  >> $VAR_FILE_INFO
 echo "=====================================" >> $VAR_FILE_INFO
-echo "Direccines" >> $VAR_FILE_INFO
+echo "Direcciones" >> $VAR_FILE_INFO
 echo "=====================================" >> $VAR_FILE_INFO
 
 if [ $VAR_SITE_PORT = "80" ];
@@ -557,3 +588,21 @@ then
 	fi;
 fi;
 #=======================================================================
+echo -e "\n\e[32mFelicidades! Script ejecutado correctamente\e[39m"
+
+echo ""  >> $VAR_FILE_INFO
+echo "==========================================================================" >> $VAR_FILE_INFO
+echo "Si realiza algun cambio en los archivos del proyecto Django" >> $VAR_FILE_INFO
+echo "reiniciar los servicion de Ngnix y Gunicorn" >> $VAR_FILE_INFO
+echo "con los siguiente comandos" >> $VAR_FILE_INFO
+echo ""  >> $VAR_FILE_INFO
+echo "sudo systemctl restart nginx.service"  >> $VAR_FILE_INFO
+echo "sudo systemctl restart $VAR_GUNICORN_SERVICE"  >> $VAR_FILE_INFO
+echo "Para mas información visite: http://gams87.pythonanywhere.com/"  >> $VAR_FILE_INFO
+
+echo -e ""
+echo -e "Si realiza algun cambio en los archivos del proyecto Django reiniciar los servicion de Ngnix y Gunicorn con los siguiente comandos"
+echo -e "sudo systemctl restart nginx.service"
+echo -e "sudo systemctl restart $VAR_GUNICORN_SERVICE"
+echo -e ""
+echo "Para mas información visite: http://gams87.pythonanywhere.com/"
