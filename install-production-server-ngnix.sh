@@ -161,6 +161,9 @@ then
 		echo -e "GRANT ALL PRIVILEGES ON DATABASE $VAR_SITE TO $VAR_DATABASE_USER;"
 		sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $VAR_SITE TO $VAR_DATABASE_USER;"
 		
+		echo -e "ALTER DATABASE $VAR_SITE OWNER TO $VAR_DATABASE_USER;"
+		sudo -u postgres psql -c "ALTER DATABASE $VAR_SITE OWNER TO $VAR_DATABASE_USER;"
+		
 		# sudo -u postgres psql
 
 		echo -e "\n\e[32m3. Configurando phppgadmin\e[39m"
