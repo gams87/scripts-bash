@@ -75,7 +75,7 @@ echo -e "\e[32m[Variables definidas correctamente]\e[39m"
 #=======================================================================
 # 2. Actualizacion del servidor
 #=======================================================================
-echo -e "\n\e[32m2. Actualizacion del servidor\e[39m"
+echo -e "\n\e[32mActualizacion del servidor\e[39m"
 sudo apt-get update && sudo apt-get upgrade -y
 echo -e "\e[32m[Fin de actualizacion del servidor]\e[39m" 
 #=======================================================================
@@ -85,7 +85,7 @@ echo -e "\e[32m[Fin de actualizacion del servidor]\e[39m"
 #=======================================================================
 # 3. Configurar locale
 #=======================================================================
-echo -e "\n\e[32m2. Configuracion locale\e[39m"
+echo -e "\n\e[32mConfiguracion locale\e[39m"
 export LC_ALL="es_CR.UTF-8"
 export LC_CTYPE="es_CR.UTF-8"
 sudo dpkg-reconfigure locales
@@ -97,7 +97,7 @@ echo -e "\e[32m[Fin de configuracion de locale]\e[39m"
 #=======================================================================
 # 4. Instalacion de las dependencias
 #=======================================================================
-echo -e "\n\e[32m3. Instalando paquetes\e[39m"
+echo -e "\n\e[32mInstalando paquetes\e[39m"
 sudo apt-get install libjpeg-dev libpq-dev build-essential libssl-dev libffi-dev libmysqlclient-dev -y
 sudo apt-get install python3-pip python3-venv python3-dev -y
 sudo apt-get install nginx -y
@@ -114,7 +114,7 @@ echo -e "\e[32m[Fin de instalacion de paquetes]\e[39m"
 #=======================================================================
 # 5. Instalacion de base de datos
 #=======================================================================
-echo -e "\n\e[32m3. Instalando base de datos\e[39m"
+echo -e "\n\e[32mInstalando base de datos\e[39m"
 if [ $VAR_DATABASE_USE -eq 1 ];
 then
 	if [ $VAR_DATABASE_ENGINE = "mysql" ];
@@ -232,7 +232,7 @@ echo -e "\e[32m[Fin de instalacion de bases de datos]\e[39m"
 #=======================================================================
 # 6. Configurar virtualenv
 #=======================================================================
-echo -e "\n\e[32m5. Creando y activando virtualenv\e[39m"
+echo -e "\n\e[32mCreando y activando virtualenv\e[39m"
 if [ -d ~/$VAR_PROJECT ];
 then
 	rm -rf ~/$VAR_PROJECT
@@ -259,13 +259,13 @@ echo -e "\e[32m[Virtualenv configurada correctamente]\e[39m"
 if [ $VAR_NEW_PROJECT -eq 1 ];
 then
 	# Crear nuevo projecto Django
-	echo -e "\n\e[32m7. Creando nuevo proyecto de Django [$VAR_SITE]\e[39m"
+	echo -e "\n\e[32mCreando nuevo proyecto de Django [$VAR_SITE]\e[39m"
 	cd ~/$VAR_PROJECT
 	django-admin.py startproject $VAR_SITE
 	echo -e "\e[32m[Nuevo proyecto de Django creado correctamente]\e[39m"
 else
 	# Clonar proyecto Django con git
-	echo -e "\n\e[32m7. Clonando proyecto de Django [$VAR_REPO_NAME]\e[39m"
+	echo -e "\n\e[32mClonando proyecto de Django [$VAR_REPO_NAME]\e[39m"
 	cd ~/$VAR_PROJECT
 	git clone $VAR_REPO_ORIGIN
 	cd $VAR_REPO_NAME
@@ -286,7 +286,7 @@ fi;
 #=======================================================================
 # 8. Crear las migraciones a base de datos
 #=======================================================================
-echo -e "\n\e[32m8. Creando las migraciones a base de datos\e[39m"
+echo -e "\n\e[32mCreando las migraciones a base de datos\e[39m"
 python manage.py collectstatic
 python manage.py makemigrations
 python manage.py migrate
@@ -300,7 +300,7 @@ echo -e "\e[32m[Migraciones a base de datos correctamente]\e[39m"
 #=======================================================================
 # 9. Crear e iniciar servicio para Gunicorn
 #=======================================================================
-echo -e "\n\e[32m9. Creando e iniciando el servicio para Gunicorn\e[39m"
+echo -e "\n\e[32mCreando e iniciando el servicio para Gunicorn\e[39m"
 if [ -f $VAR_GUNICORN_SERVICE ];
 then
 	sudo rm -f $VAR_GUNICORN_SERVICE
@@ -339,7 +339,7 @@ echo -e "\e[32m[Servicio Gunicorn creado e iniciado correctamente]\e[39m"
 #=======================================================================
 # 10. Configurar Nginx
 #=======================================================================
-echo -e "\n\e[32m10. Creando el fichero de configuracion Ngnix para el sitio [$VAR_SITE_NGNIX]\e[39m"
+echo -e "\n\e[32mCreando el fichero de configuracion Ngnix para el sitio [$VAR_SITE_NGNIX]\e[39m"
 if [ -f $VAR_SITE_NGNIX ];
 then
 	sudo rm -f $VAR_SITE_NGNIX
