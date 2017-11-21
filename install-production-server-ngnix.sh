@@ -93,12 +93,6 @@ sudo -H pip3 install virtualenv
 echo -e "\e[32m[Fin de instalacion de dependencias]\e[39m"
 #=======================================================================
 
-
-#=======================================================================
-# Definicion de variables
-#=======================================================================
-echo -e "\n\e[32mVariables para el proyecto Django\e[39m"
-
 # ============================================================================
 # Usuario (Owner)
 # ============================================================================
@@ -200,9 +194,7 @@ else
 fi;
 
 VAR_PATH_SETTINGS_DJANGO=$(find $VAR_PROJECT/ -name 'settings.py')
-
 echo "Ruta del archivo settings.py: $VAR_PATH_SETTINGS_DJANGO" >> $VAR_FILE_INFO
-echo -e "\e[32m[Fin de configuración de variables para el proyecto Django]\e[39m"
 #=======================================================================
 
 
@@ -530,7 +522,7 @@ then
 	VAR_INPUT="NO"
 fi;
 
-if [ $VAR_SITE_PORT = "YES" ];
+if [ $VAR_INPUT = "YES" ];
 then
 	nano $VAR_PATH_SETTINGS_DJANGO
 fi;
@@ -573,7 +565,7 @@ else
 	echo "Dirección web del sitio: http://$VAR_DOMAIN_OR_IP:$VAR_SITE_PORT" >> $VAR_FILE_INFO
 fi;
 
-if [ $VAR_DATABASE_USE -eq 1 ];
+if [ $VAR_DATABASE_USE -eq "1" ];
 then
 	if [ $VAR_DATABASE_ENGINE = "mysql" ];
 	then
@@ -601,7 +593,7 @@ echo "sudo systemctl restart $VAR_GUNICORN_SERVICE"  >> $VAR_FILE_INFO
 echo "Para mas información visite: http://gams87.pythonanywhere.com/"  >> $VAR_FILE_INFO
 
 echo -e ""
-echo -e "Si realiza algun cambio en los archivos del proyecto Django reiniciar los servicion de Ngnix y Gunicorn con los siguiente comandos"
+echo -e "Si realiza algun cambio en los archivos del proyecto Django reiniciar los servicion de Ngnix y Gunicorn con los siguiente comandos:"
 echo -e "sudo systemctl restart nginx.service"
 echo -e "sudo systemctl restart $VAR_GUNICORN_SERVICE"
 echo -e ""
