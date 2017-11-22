@@ -631,17 +631,8 @@ fi;
 
 if [ $VAR_DATABASE_USE -eq 1 ];
 then
-	if [ $VAR_DATABASE_ENGINE = "mysql" ];
-	then
-		echo -e "http://<SERVER-IP-OR-DOMAIN>/phpmyadmin"
-		echo "Base de datos: http://<SERVER-IP-OR-DOMAIN>/phpmyadmin" >> $VAR_FILE_INFO
-	fi;
-	
-	if [ $VAR_DATABASE_ENGINE = "postgres" ];
-	then
-		echo -e "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB"
-		echo "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB" >> $VAR_FILE_INFO
-	fi;
+	echo -e "http://$VAR_DOMAIN_OR_IP/phpmyadmin"
+	echo "Base de datos: http://$VAR_DOMAIN_OR_IP/$VAR_ADMIN_WEB" >> $VAR_FILE_INFO
 fi;
 #=======================================================================
 echo -e "\n\e[32mFelicidades! Script ejecutado correctamente\e[39m"
