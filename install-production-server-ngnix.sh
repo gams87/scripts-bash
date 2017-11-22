@@ -11,20 +11,9 @@
 # ---
 # Descripcion: Script que instala una aplicacion django nuevo o desde
 # un repositocio GIT y la configura para ser mostrada por un servidor
-# Nginx para producion.
+# Nginx para producion, como una base de datos Postgres o MySQL
+# y su cliente de administracion web phppgadmin o phpmyadmin
 # ---
-# Ejecucion:
-#	1. Configuracion de variables
-#	2. Actualizacion del servidor
-#	3. Configurar locale
-#	4. Instalacion de dependencias
-#	5. Instalacion de base de datos
-#	6. Crear y activar virtualenv
-#	7. Crear o clonar projecto de Django
-#	8. Crear las migraciones a base de datos
-#	9. Crear e iniciar servicio para Gunicorn
-#	10. Configurar Nginx
-#	11. Mensaje de ejecucion
 #
 #=======================================================================
 
@@ -398,13 +387,11 @@ then
 	echo "Contraseña: $VAR_DATABASE_PASSWORD" >> $VAR_FILE_INFO
 
 	sudo apt-get install php php-fpm php-cli php-common php-mbstring php-gd php-intl php-xml php-mcrypt php-zip -y
+	sudo phpenmod mcryp
 	
 	if [ $VAR_DATABASE_ENGINE = "mysql" ];
 	then
-		sudo apt-get install mysql-server php-mysql phpmyadmin -y
-		sudo php5enmod mcrypt
-		sudo service php5-fpm restart
-		sudo ln -s /usr/share/phpmyadmin /usr/share/nginx/html
+		sudo apt-get install mysql-server php-mysql python-mysqldb -y
 		sudo mysql_secure_installation
 		echo -e ""
 		echo -e "============================================================================"
@@ -446,18 +433,42 @@ then
 		
 		echo -e "ALTER DATABASE $VAR_DATABASE_NAME OWNER TO $VAR_DATABASE_USER;"
 		sudo -u postgres psql -c "ALTER DATABASE $VAR_DATABASE_NAME OWNER TO $VAR_DATABASE_USER;"
+	fi;
+fi
+echo -e "\e[32m[Fin de configuración e instalacion de bases de datos]\e[39m"
+#=======================================================================
 
-		echo -e ""
-		echo -n "Desea configurar el phppgadmin para este sitio [yes/no] (yes): "
-		read VAR_INPUT
-		VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
 
-		if [ -z $VAR_INPUT ];
-		then
-			VAR_INPUT="YES"
-		fi;
+# ============================================================================
+# Instalacion y configuracion de Phppgadmin o Phpmyadmin
+# ============================================================================
+if [ $VAR_DATABASE_USE -eq 1 ];
+then
+	echo -e "\n\e[32mInstalacion y configuracion de Phppgadmin o Phpmyadmin\e[39m"
+	VAR_ADMIN_WEB=""
+	if [ $VAR_DATABASE_ENGINE = "postgres" ];
+	then
+		VAR_ADMIN_WEB="phppgadmin"
+	if;
 
-		if [ $VAR_INPUT = "YES" ];
+	if [ $VAR_DATABASE_ENGINE = "mysql" ];
+	then
+		VAR_ADMIN_WEB="phpmyadmin"
+	if;
+
+	echo -e ""
+	echo -n "Desea configurar el $VAR_ADMIN_WEB para este sitio [yes/no] (yes): "
+	read VAR_INPUT
+	VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
+
+	if [ -z $VAR_INPUT ];
+	then
+		VAR_INPUT="YES"
+	fi;
+
+	if [ $VAR_INPUT = "YES" ];
+	then
+		if [ $VAR_DATABASE_ENGINE = "postgres" ];
 		then
 			if [ ! -h "/var/www/phppgadmin" ];
 			then
@@ -465,68 +476,79 @@ then
 			    echo -e "\n\e[32mConfigurando phppgadmin\e[39m"
 				sudo ln -s /usr/share/phppgadmin /var/www
 			fi;
-			
-			echo -n "Digite el puerto para phpppgadmin (8081): "
-			read VAR_DATABASE_PORT_WEB
+		if;
 
-			if [ -z $VAR_DATABASE_PORT_WEB ];
+		if [ $VAR_DATABASE_ENGINE = "mysql" ];
+		then
+			if [ ! -h "/var/www/phpmyadmin" ];
 			then
-				VAR_DATABASE_PORT_WEB="8081"
+			    sudo apt-get install phpmyadmin -y
+			    echo -e "\n\e[32mConfigurando phpmyadmin\e[39m"
+				sudo ln -s /usr/share/phpmyadmin /var/www
 			fi;
+		if;			
 
-			echo "Puerto de administración para phppgadmin: $VAR_DATABASE_PORT_WEB" >> $VAR_FILE_INFO
-			
-			VAR_PHPPGADMIN_NAME_FILE="$VAR_SITE-phppgadmin.conf"
-			VAR_PAHT_PHPPGADMIN_NGNIX="$VAR_PAHT_NGNIX/$VAR_PHPPGADMIN_NAME_FILE"
+		echo -n "Digite el puerto para $VAR_ADMIN_WEB (8081): "
+		read VAR_DATABASE_PORT_WEB
 
-			if [ -f $VAR_PHPPGADMIN_NAME_FILE ];
-			then
-				sudo rm -f $VAR_PHPPGADMIN_NAME_FILE
-			fi;
-
-			VAR_PATH_PHP_SOCK="/var/run/php/"
-			VAR_PHP_FPM_SOCK=$(find $VAR_PATH_PHP_SOCK -name '*.sock')
-
-			touch $VAR_PHPPGADMIN_NAME_FILE
-			echo "server {" > $VAR_PHPPGADMIN_NAME_FILE
-			echo "	listen $VAR_DATABASE_PORT_WEB;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "	server_name $VAR_DOMAIN_OR_IP;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "	root  /var/www/phppgadmin;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "	index index.html index.html index.php;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "	access_log /var/log/phppgadmin/access.log;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "	error_log /var/log/phppgadmin/error.log;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "	location ~ \.php$ {" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "		autoindex on;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "		try_files \$uri =404;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "		fastcgi_split_path_info ^(.+\.php)(/.+)$;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "		fastcgi_pass unix:$VAR_PHP_FPM_SOCK;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "		fastcgi_index index.php;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "		fastcgi_param SCRIPT_FILENAME /var/www/phppgadmin\$fastcgi_script_name;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "		include /etc/nginx/fastcgi_params;" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "	}" >> $VAR_PHPPGADMIN_NAME_FILE
-			echo "}" >> $VAR_PHPPGADMIN_NAME_FILE
-
-			if [ -f $VAR_PAHT_PHPPGADMIN_NGNIX ];
-			then
-				sudo rm -f $VAR_PAHT_PHPPGADMIN_NGNIX
-			fi;
-
-			sudo cp $VAR_PHPPGADMIN_NAME_FILE $VAR_PAHT_PHPPGADMIN_NGNIX
-			sudo rm $VAR_PHPPGADMIN_NAME_FILE
-
-			if [ -h /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE ];
-			then
-				sudo rm -f /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
-			fi;
-
-			sudo ln -s $VAR_PAHT_PHPPGADMIN_NGNIX /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
-			sudo mkdir -p /var/log/phppgadmin
+		if [ -z $VAR_DATABASE_PORT_WEB ];
+		then
+			VAR_DATABASE_PORT_WEB="8081"
 		fi;
+
+		echo "Puerto de administración para $VAR_ADMIN_WEB: $VAR_DATABASE_PORT_WEB" >> $VAR_FILE_INFO
+			
+		VAR_PHPADMIN_NAME_FILE="$VAR_SITE-$VAR_ADMIN_WEB.conf"
+		VAR_PATH_PHPADMIN_NGNIX="$VAR_PATH_NGNIX/$VAR_PHPADMIN_NAME_FILE"
+
+		if [ -f $VAR_PHPADMIN_NAME_FILE ];
+		then
+			sudo rm -f $VAR_PHPADMIN_NAME_FILE
+		fi;
+
+		VAR_PATH_PHP_SOCK="/var/run/php/"
+		VAR_PHP_FPM_SOCK=$(find $VAR_PATH_PHP_SOCK -name '*.sock')
+
+		touch $VAR_PHPADMIN_NAME_FILE
+		echo "server {" > $VAR_PHPADMIN_NAME_FILE
+		echo "	listen $VAR_DATABASE_PORT_WEB;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "	server_name $VAR_DOMAIN_OR_IP;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "	root  /var/www/$VAR_ADMIN_WEB;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "	index index.html index.html index.php;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "" >> $VAR_PHPADMIN_NAME_FILE
+		echo "	access_log /var/log/$VAR_ADMIN_WEB/access.log;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "	error_log /var/log/$VAR_ADMIN_WEB/error.log;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "" >> $VAR_PHPADMIN_NAME_FILE
+		echo "	location ~ \.php$ {" >> $VAR_PHPADMIN_NAME_FILE
+		echo "		autoindex on;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "		try_files \$uri =404;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "		fastcgi_split_path_info ^(.+\.php)(/.+)$;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "		fastcgi_pass unix:$VAR_PHP_FPM_SOCK;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "		fastcgi_index index.php;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "		fastcgi_param SCRIPT_FILENAME /var/www/$VAR_ADMIN_WEB\$fastcgi_script_name;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "		include /etc/nginx/fastcgi_params;" >> $VAR_PHPADMIN_NAME_FILE
+		echo "	}" >> $VAR_PHPADMIN_NAME_FILE
+		echo "}" >> $VAR_PHPADMIN_NAME_FILE
+
+		if [ -f $VAR_PATH_PHPADMIN_NGNIX ];
+		then
+			sudo rm -f $VAR_PATH_PHPADMIN_NGNIX
+		fi;
+
+		sudo cp $VAR_PHPADMIN_NAME_FILE $VAR_PATH_PHPADMIN_NGNIX
+		sudo rm $VAR_PHPADMIN_NAME_FILE
+
+		if [ -h /etc/nginx/sites-enabled/$VAR_PHPADMIN_NAME_FILE ];
+		then
+			sudo rm -f /etc/nginx/sites-enabled/$VAR_PHPADMIN_NAME_FILE
+		fi;
+
+		sudo ln -s $VAR_PATH_PHPADMIN_NGNIX /etc/nginx/sites-enabled/$VAR_PHPADMIN_NAME_FILE
+		sudo mkdir -p /var/log/$VAR_ADMIN_WEB
 	fi;
-fi
-echo -e "\e[32m[Fin de configuración e instalacion de bases de datos]\e[39m"
+
+	echo -e "\e[32m[Fin de instalacion y configuracion de Phppgadmin o Phpmyadmin\]\e[39m"
+fi;
 #=======================================================================
 
 

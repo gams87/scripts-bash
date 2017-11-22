@@ -2,51 +2,38 @@
 
 Script para instalar un sitio en produción con las siguientes tecnologías
 
-1. Linux
-2. Python
+1. Linux (Ubuntu Server 16.04 o Ubuntu Server 17.10)
+2. Python3
 3. Django
-4. Postgres o Mysql
-5. Git
-6. Nginx
-7. PHPpgadmin
+4. Virtualenv
+5. Postgres o Mysql
+6. Git
+7. Nginx
+8. Phppgadmin o Phpmyadmin
 
 ## Pasos
 
-1. Modificar las variables del fichero **install-production-server-ngnix.sh**
-
-- **VAR_NEW_PROJECT=0**						# 1 => Repositorio Nuevo, 0 => Clonar repositorio
-- **VAR_SITE="misitio"** 					#  Nombre de mi sitio
-- **VAR_USER=$(who | cut -d' ' -f 1)** 		# Validar si este comando who | cut -d' ' -f 1 trae nuestro usuario si no podemos agregarlo literal
-- **VAR_REPO_ORIGIN="https://github.com/gams87/django-site-example.git"** # Dirección de mi repositorio
-- **VAR_REPO_NAME="django-site-example"**	# Nombre del repositorio a clonar si VAR_NEW_PROJECT=0
-- **VAR_REPO_BRANCH="master"**				# Rama del repositorio
-- **VAR_DEPENDENCIES="pillow"**				# Librerias Python necesarias separadas por espacio
-- **VAR_DOMAIN_OR_IP="$VAR_SITE.com"**		# Mi dominio o ip
-
-2. Modificar las variables de base de datos del fichero **install-production-server-ngnix.sh**
-
-- **VAR_DATABASE_USE=0**					# 1 => Usa base de datos 0 => No usa base de datos
-- **VAR_DATABASE_ENGINE="postgresql"**		# Motor de base de datos postgresql o mysql
-- **VAR_DATABASE_USER=$VAR_SITE**			# Usuario de base de datos, en este caso el mismo que el sitio
-- **VAR_DATABASE_PASSWORD="mipasswd"**		# Password de mi base de datos
-- **VAR_DATABASE_PORT_WEB="8081"**			# Puerto para la administración de phppgadmin
-
-3. Ejecutar el fichero **install-production-server-ngnix.sh**
+1. Ejecutar el fichero **install-production-server-ngnix.sh**
 
 `./install-production-server-ngnix.sh`
 
-4. Verificar la instalación en la ruta del sitio:
+2. Verificar la instalación en la ruta del sitio:
 
 `/home/<mi-usuario>/sites/<mi-sitio>`
 
-5. Si no tenemos DNS podemos agregar en nuestro archivo /etc/hosts
+3. Si nuestro repositorio contiene en la raiz un archivo de `requirements.txt` instala las dependencias incluidas en el archivo.
+
+4. Si no tenemos DNS podemos agregar un registro en nuestros clientes linux en **/etc/hosts** en cliente Windows **C:\Windows\System32\drivers\etc\hosts**
 
 `127.0.0.1	<mi-sitio>` # Donde **mi-sitio>** es el valor de VAR_DOMAIN_OR_IP
 
-
-6. EN el navegador
+5. En el navegador
 
 - Sitio web: **http://VAR_DOMAIN_OR_IP**
 - Base de datos: **http://VAR_DOMAIN_OR_IP:VAR_DATABASE_PORT_WEB**
 
 *Si no hemos cambiado los puertos en las variables respectivas*
+
+Para mas información:
+Email: ***galejandromorera@gmail.com*
+**[Tutorial](http://gams87.pythonanywhere.com/entry/detail/instalar-django-linux-nginx-y-base-de-datos/ "Tutorial")**
