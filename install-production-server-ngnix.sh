@@ -449,12 +449,12 @@ then
 	if [ $VAR_DATABASE_ENGINE = "postgres" ];
 	then
 		VAR_ADMIN_WEB="phppgadmin"
-	if;
+	fi;
 
 	if [ $VAR_DATABASE_ENGINE = "mysql" ];
 	then
 		VAR_ADMIN_WEB="phpmyadmin"
-	if;
+	fi;
 
 	echo -e ""
 	echo -n "Desea configurar el $VAR_ADMIN_WEB para este sitio [yes/no] (yes): "
