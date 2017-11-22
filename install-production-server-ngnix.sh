@@ -400,6 +400,7 @@ then
 		echo -e "CREATE USER '$VAR_DATABASE_USER'@'localhost' IDENTIFIED BY '$VAR_DATABASE_PASSWORD';"
 		echo -e "GRANT ALL PRIVILEGES ON * . * TO '$VAR_DATABASE_USER'@'localhost';"
 		echo -e "FLUSH PRIVILEGES;"
+		echo -e "quit"
 		echo -e "Para salir de MySQL digite => quit"
 		echo -e "============================================================================"
 		mysql -u root -p
