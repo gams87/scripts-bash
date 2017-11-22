@@ -1,6 +1,6 @@
 # Script install Django and Ngnix
 
-Script para instalar un sitio en producción o diferentes ambietes como desarrollo y pruebas con las siguientes tecnologías:
+Script para instalar un sitio en producción o diferentes ambientes como desarrollo y pruebas con las siguientes tecnologías:
 
 1. Linux (Ubuntu Server 16.04 o Ubuntu Server 17.10)
 2. Python3
