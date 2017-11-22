@@ -348,6 +348,7 @@ then
 fi;
 
 VAR_DATABASE_USE=0
+VAR_DATABASE_USE_ADMIN_WEB=0
 if [ $VAR_INPUT = "YES" ];
 then
 	VAR_DATABASE_USE=1
@@ -418,7 +419,7 @@ then
 	
 	if [ $VAR_DATABASE_ENGINE = "postgres" ];
 	then
-		sudo apt-get install postgresql postgresql-contrib phppgadmin -y
+		sudo apt-get install postgresql postgresql-contrib -y
 		
 		echo -e ""
 		echo -e "============================================================================"
@@ -446,68 +447,83 @@ then
 		echo -e "ALTER DATABASE $VAR_DATABASE_NAME OWNER TO $VAR_DATABASE_USER;"
 		sudo -u postgres psql -c "ALTER DATABASE $VAR_DATABASE_NAME OWNER TO $VAR_DATABASE_USER;"
 
-		echo -e "\n\e[32mConfigurando phppgadmin\e[39m"
-		echo -n "Digite el puerto para phpppgadmin (8081): "
-		read VAR_DATABASE_PORT_WEB
+		echo -e ""
+		echo -n "Desea configurar el phppgadmin para este sitio [yes/no] (yes): "
+		read VAR_INPUT
+		VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
 
-		if [ -z $VAR_DATABASE_PORT_WEB ];
+		if [ -z $VAR_INPUT ];
 		then
-			VAR_DATABASE_PORT_WEB="8081"
+			VAR_INPUT="YES"
 		fi;
 
-		echo "Puerto de administración para phppgadmin: $VAR_DATABASE_PORT_WEB" >> $VAR_FILE_INFO
-
-		VAR_PHPPGADMIN_NAME_FILE="phppgadmin.conf"
-		VAR_PAHT_PHPPGADMIN_NGNIX="$VAR_PAHT_NGNIX/$VAR_PHPPGADMIN_NAME_FILE"
-
-		if [ -h "/var/www/phppgadmin" ];
+		if [ $VAR_INPUT = "YES" ];
 		then
-			sudo rm -f /var/www/phppgadmin
+			if [ ! -h "/var/www/phppgadmin" ];
+			then
+			    sudo apt-get install phppgadmin -y
+			    echo -e "\n\e[32mConfigurando phppgadmin\e[39m"
+				sudo ln -s /usr/share/phppgadmin /var/www
+			fi;
+			
+			echo -n "Digite el puerto para phpppgadmin (8081): "
+			read VAR_DATABASE_PORT_WEB
+
+			if [ -z $VAR_DATABASE_PORT_WEB ];
+			then
+				VAR_DATABASE_PORT_WEB="8081"
+			fi;
+
+			echo "Puerto de administración para phppgadmin: $VAR_DATABASE_PORT_WEB" >> $VAR_FILE_INFO
+			
+			VAR_PHPPGADMIN_NAME_FILE="$VAR_SITE-phppgadmin.conf"
+			VAR_PAHT_PHPPGADMIN_NGNIX="$VAR_PAHT_NGNIX/$VAR_PHPPGADMIN_NAME_FILE"
+
+			if [ -f $VAR_PHPPGADMIN_NAME_FILE ];
+			then
+				sudo rm -f $VAR_PHPPGADMIN_NAME_FILE
+			fi;
+
+			VAR_PATH_PHP_SOCK="/var/run/php/"
+			VAR_PHP_FPM_SOCK=$(find $VAR_PATH_PHP_SOCK -name '*.sock')
+
+			touch $VAR_PHPPGADMIN_NAME_FILE
+			echo "server {" > $VAR_PHPPGADMIN_NAME_FILE
+			echo "	listen $VAR_DATABASE_PORT_WEB;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "	server_name $VAR_DOMAIN_OR_IP;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "	root  /var/www/phppgadmin;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "	index index.html index.html index.php;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "	access_log /var/log/phppgadmin/access.log;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "	error_log /var/log/phppgadmin/error.log;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "	location ~ \.php$ {" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "		autoindex on;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "		try_files \$uri =404;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "		fastcgi_split_path_info ^(.+\.php)(/.+)$;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "		fastcgi_pass unix:$VAR_PHP_FPM_SOCK;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "		fastcgi_index index.php;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "		fastcgi_param SCRIPT_FILENAME /var/www/phppgadmin\$fastcgi_script_name;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "		include /etc/nginx/fastcgi_params;" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "	}" >> $VAR_PHPPGADMIN_NAME_FILE
+			echo "}" >> $VAR_PHPPGADMIN_NAME_FILE
+
+			if [ -f $VAR_PAHT_PHPPGADMIN_NGNIX ];
+			then
+				sudo rm -f $VAR_PAHT_PHPPGADMIN_NGNIX
+			fi;
+
+			sudo cp $VAR_PHPPGADMIN_NAME_FILE $VAR_PAHT_PHPPGADMIN_NGNIX
+			sudo rm $VAR_PHPPGADMIN_NAME_FILE
+
+			if [ -h /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE ];
+			then
+				sudo rm -f /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
+			fi;
+
+			sudo ln -s $VAR_PAHT_PHPPGADMIN_NGNIX /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
+			sudo mkdir -p /var/log/phppgadmin
 		fi;
-
-		sudo ln -s /usr/share/phppgadmin /var/www
-
-		if [ -f $VAR_PHPPGADMIN_NAME_FILE ];
-		then
-			sudo rm -f $VAR_PHPPGADMIN_NAME_FILE
-		fi;
-
-		touch $VAR_PHPPGADMIN_NAME_FILE
-		echo "server {" > $VAR_PHPPGADMIN_NAME_FILE
-		echo "	listen $VAR_DATABASE_PORT_WEB;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "	server_name $VAR_DOMAIN_OR_IP;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "	root  /var/www/phppgadmin;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "	index index.html index.html index.php;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "	access_log /var/log/phppgadmin/access.log;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "	error_log /var/log/phppgadmin/error.log;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "	location ~ \.php$ {" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "		autoindex on;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "		try_files \$uri =404;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "		fastcgi_split_path_info ^(.+\.php)(/.+)$;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "		fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "		fastcgi_index index.php;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "		fastcgi_param SCRIPT_FILENAME /var/www/phppgadmin\$fastcgi_script_name;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "		include /etc/nginx/fastcgi_params;" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "	}" >> $VAR_PHPPGADMIN_NAME_FILE
-		echo "}" >> $VAR_PHPPGADMIN_NAME_FILE
-
-		if [ -f $VAR_PAHT_PHPPGADMIN_NGNIX ];
-		then
-			sudo rm -f $VAR_PAHT_PHPPGADMIN_NGNIX
-		fi;
-
-		sudo cp $VAR_PHPPGADMIN_NAME_FILE $VAR_PAHT_PHPPGADMIN_NGNIX
-		sudo rm $VAR_PHPPGADMIN_NAME_FILE
-
-		if [ -h /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE ];
-		then
-			sudo rm -f /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
-		fi;
-
-		sudo ln -s $VAR_PAHT_PHPPGADMIN_NGNIX /etc/nginx/sites-enabled/$VAR_PHPPGADMIN_NAME_FILE
-		sudo mkdir -p /var/log/phppgadmin
 	fi;
 fi
 echo -e "\e[32m[Fin de configuración e instalacion de bases de datos]\e[39m"
