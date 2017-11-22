@@ -87,7 +87,7 @@ echo -e "\e[32m[Fin de instalacion de dependencias]\e[39m"
 # ============================================================================
 VAR_USER=$(who -m | cut -d' ' -f 1) # Ubuntu y Debian
 echo -e ""
-echo -n "Digite el nombre del usuario del sitema actual ($VAR_USER): "
+echo -n "Digite el nombre del usuario actual del sitema ($VAR_USER): "
 read VAR_USER
 VAR_USER=${VAR_USER,,}  # Minisculas
 
