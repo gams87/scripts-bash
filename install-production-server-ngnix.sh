@@ -446,7 +446,7 @@ echo -e "\e[32m[Fin de configuración e instalacion de bases de datos]\e[39m"
 # ============================================================================
 if [ $VAR_DATABASE_USE -eq 1 ];
 then
-	echo -e "\n\e[32mInstalacion y configuracion de Phppgadmin o Phpmyadmin\e[39m"
+	echo -e "\n\e[32mInstalacion y configuracion de cliente web para base de datos\e[39m"
 	VAR_ADMIN_WEB=""
 	if [ $VAR_DATABASE_ENGINE = "postgres" ];
 	then
@@ -550,7 +550,7 @@ then
 		sudo systemctl restart nginx.service
 	fi;
 
-	echo -e "\e[32m[Fin de instalacion y configuracion de Phppgadmin o Phpmyadmin\]\e[39m"
+	echo -e "\e[32m[Fin de instalacion y configuracion de para base de datos]\e[39m"
 fi;
 #=======================================================================
 
@@ -632,7 +632,7 @@ fi;
 
 if [ $VAR_DATABASE_USE -eq 1 ];
 then
-	echo -e "http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB"
+	echo -e "Base de datos: http://$VAR_DOMAIN_OR_IP:$VAR_DATABASE_PORT_WEB"
 	echo "Base de datos: http://$VAR_DOMAIN_OR_IP:VAR_DATABASE_PORT_WEB" >> $VAR_FILE_INFO
 fi;
 #=======================================================================
