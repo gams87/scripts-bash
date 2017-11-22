@@ -36,5 +36,5 @@ Script para instalar un sitio en producción o diferentes ambietes como desarrol
 *Si no hemos cambiado los puertos en las variables respectivas*
 
 Para mas información:
-Email: ***galejandromorera@gmail.com*
-**[Tutorial](http://gams87.pythonanywhere.com/entry/detail/instalar-django-linux-nginx-y-base-de-datos/ "Tutorial")**
+- Email: **galejandromorera@gmail.com**
+- **[Tutorial](http://gams87.pythonanywhere.com/entry/detail/instalar-django-linux-nginx-y-base-de-datos/ "Tutorial")**
