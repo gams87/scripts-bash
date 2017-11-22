@@ -1,4 +1,4 @@
-# scripts-bash
+# Script install Django and Ngnix
 
 Script para instalar un sitio en producción o diferentes ambietes como desarrollo y pruebas con las siguientes tecnologías:
 
