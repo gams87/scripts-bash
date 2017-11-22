@@ -1,6 +1,6 @@
 # scripts-bash
 
-Script para instalar un sitio en produción con las siguientes tecnologías
+Script para instalar un sitio en producción o diferentes ambietes como desarrollo y pruebas con las siguientes tecnologías:
 
 1. Linux (Ubuntu Server 16.04 o Ubuntu Server 17.10)
 2. Python3
@@ -10,6 +10,7 @@ Script para instalar un sitio en produción con las siguientes tecnologías
 6. Git
 7. Nginx
 8. Phppgadmin o Phpmyadmin
+9. Pip
 
 ## Pasos
 
