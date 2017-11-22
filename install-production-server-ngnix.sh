@@ -193,7 +193,7 @@ virtualenv $VAR_VIRTUALENV
 source $VAR_VIRTUALENV/bin/activate
 pip install --upgrade pip
 pip3 install --upgrade pip
-pip3 install django gunicorn
+pip3 install django gunicorn psycopg2 mysqlclient
 
 if [ -f $VAR_PROJECT/$VAR_SITE/requirements.txt ];
 then
@@ -395,11 +395,12 @@ then
 		sudo mysql_secure_installation
 		echo -e ""
 		echo -e "============================================================================"
-		echo -e "Ejecute los siguientes comandos =>"
+		echo -e "Digite su password de root y ejecute los siguientes comandos =>"
 		echo -e "CREATE DATABASE $VAR_SITE CHARACTER SET utf8;"
 		echo -e "CREATE USER '$VAR_DATABASE_USER'@'localhost' IDENTIFIED BY '$VAR_DATABASE_PASSWORD';"
 		echo -e "GRANT ALL PRIVILEGES ON * . * TO '$VAR_DATABASE_USER'@'localhost';"
 		echo -e "FLUSH PRIVILEGES;"
+		echo -e "Para salir de MySQL digite => quit"
 		echo -e "============================================================================"
 		mysql -u root -p
 	fi;
@@ -545,6 +546,7 @@ then
 
 		sudo ln -s $VAR_PATH_PHPADMIN_NGNIX /etc/nginx/sites-enabled/$VAR_PHPADMIN_NAME_FILE
 		sudo mkdir -p /var/log/$VAR_ADMIN_WEB
+		sudo systemctl restart nginx.service
 	fi;
 
 	echo -e "\e[32m[Fin de instalacion y configuracion de Phppgadmin o Phpmyadmin\]\e[39m"
