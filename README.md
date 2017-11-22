@@ -26,7 +26,7 @@ Script para instalar un sitio en producción o diferentes ambietes como desarrol
 
 4. Si no tenemos DNS podemos agregar un registro en nuestros clientes linux en **/etc/hosts** en cliente Windows **C:\Windows\System32\drivers\etc\hosts**
 
-`127.0.0.1	<mi-sitio>` # Donde **mi-sitio>** es el valor de VAR_DOMAIN_OR_IP
+`127.0.0.1	<mi-sitio>`
 
 5. En el navegador
 
