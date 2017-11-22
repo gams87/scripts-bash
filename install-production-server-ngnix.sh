@@ -396,7 +396,7 @@ then
 		echo -e ""
 		echo -e "============================================================================"
 		echo -e "Digite su password de root y ejecute los siguientes comandos =>"
-		echo -e "CREATE DATABASE $VAR_SITE CHARACTER SET utf8;"
+		echo -e "CREATE DATABASE $VAR_DATABASE_NAME CHARACTER SET utf8;"
 		echo -e "CREATE USER '$VAR_DATABASE_USER'@'localhost' IDENTIFIED BY '$VAR_DATABASE_PASSWORD';"
 		echo -e "GRANT ALL PRIVILEGES ON * . * TO '$VAR_DATABASE_USER'@'localhost';"
 		echo -e "FLUSH PRIVILEGES;"
