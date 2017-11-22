@@ -476,7 +476,7 @@ then
 			    echo -e "\n\e[32mConfigurando phppgadmin\e[39m"
 				sudo ln -s /usr/share/phppgadmin /var/www
 			fi;
-		if;
+		fi;
 
 		if [ $VAR_DATABASE_ENGINE = "mysql" ];
 		then
@@ -486,7 +486,7 @@ then
 			    echo -e "\n\e[32mConfigurando phpmyadmin\e[39m"
 				sudo ln -s /usr/share/phpmyadmin /var/www
 			fi;
-		if;			
+		fi;
 
 		echo -n "Digite el puerto para $VAR_ADMIN_WEB (8081): "
 		read VAR_DATABASE_PORT_WEB
