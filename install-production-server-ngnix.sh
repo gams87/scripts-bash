@@ -147,6 +147,7 @@ echo -e "\e[32m[Virtualenv configurada correctamente]\e[39m"
 # ============================================================================
 # Proyecto nuevo o repositorio?
 # ============================================================================
+echo -e ""
 echo -n "Desea clonar un repositorio git con un proyecto Django [yes/no] (no): "
 read VAR_INPUT
 VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
@@ -572,9 +573,22 @@ then
 	nano $VAR_PATH_SETTINGS_DJANGO
 fi;
 
-echo -e "\n\e[32mMigraciones de base de datos y collectstatic\e[39m"
-cd $VAR_PROJECT/$VAR_SITE
-python manage.py collectstatic
+echo -e ""
+echo -n "Desea correr el comando collectstatic de Django (Debe tener configurado la variable STATIC_ROOT en el archivo settings.py de lo contrario va a generar un error) [yes/no] (no): "
+read VAR_INPUT
+VAR_INPUT=${VAR_INPUT^^}  # Mayusculas
+
+if [ -z $VAR_INPUT ];
+then
+	VAR_INPUT="NO"
+fi;
+
+if [ $VAR_INPUT = "YES" ];
+then
+	echo -e "\n\e[32mMigraciones de base de datos y collectstatic\e[39m"
+	cd $VAR_PROJECT/$VAR_SITE
+	python manage.py collectstatic
+fi;
 
 echo -e ""
 echo -n "Desea ejecutar las migraciones de base de datos [yes/no] (yes): "
@@ -588,6 +602,7 @@ fi;
 
 if [ $VAR_INPUT = "YES" ];
 then
+	cd $VAR_PROJECT/$VAR_SITE
 	python manage.py makemigrations
 	python manage.py migrate
 
