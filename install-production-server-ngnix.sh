@@ -127,6 +127,23 @@ echo "Ruta de Virtualenv: $VAR_VIRTUALENV" >> $VAR_FILE_INFO
 echo "Servicio Gunicorn: $VAR_GUNICORN_SERVICE" >> $VAR_FILE_INFO
 echo "Ruta Gunicorn: $VAR_PAHT_GUNICORN_SERVICE" >> $VAR_FILE_INFO
 
+#=======================================================================
+# Configurar virtualenv
+#=======================================================================
+echo -e "\n\e[32mCreando y activando virtualenv\e[39m"
+virtualenv $VAR_VIRTUALENV
+source $VAR_VIRTUALENV/bin/activate
+pip install --upgrade pip
+pip3 install --upgrade pip
+pip3 install django gunicorn psycopg2-binary psycopg2 mysqlclient
+
+if [ -f $VAR_PROJECT/$VAR_SITE/requirements.txt ];
+then
+	pip3 install -r $VAR_PROJECT/$VAR_SITE/requirements.txt
+fi;
+echo -e "\e[32m[Virtualenv configurada correctamente]\e[39m"
+#=======================================================================
+
 # ============================================================================
 # Proyecto nuevo o repositorio?
 # ============================================================================
@@ -182,24 +199,6 @@ else
 	VAR_REPO_NAME=$(ls | head -1)
 	echo "Proyecto nuevo: Si" >> $VAR_FILE_INFO
 fi;
-#=======================================================================
-
-
-#=======================================================================
-# Configurar virtualenv
-#=======================================================================
-echo -e "\n\e[32mCreando y activando virtualenv\e[39m"
-virtualenv $VAR_VIRTUALENV
-source $VAR_VIRTUALENV/bin/activate
-pip install --upgrade pip
-pip3 install --upgrade pip
-pip3 install django gunicorn psycopg2-binary psycopg2 mysqlclient
-
-if [ -f $VAR_PROJECT/$VAR_SITE/requirements.txt ];
-then
-	pip3 install -r $VAR_PROJECT/$VAR_SITE/requirements.txt
-fi;
-echo -e "\e[32m[Virtualenv configurada correctamente]\e[39m"
 #=======================================================================
 
 #=======================================================================
