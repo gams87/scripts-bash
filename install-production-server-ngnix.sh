@@ -193,7 +193,7 @@ virtualenv $VAR_VIRTUALENV
 source $VAR_VIRTUALENV/bin/activate
 pip install --upgrade pip
 pip3 install --upgrade pip
-pip3 install django gunicorn psycopg2 mysqlclient
+pip3 install django gunicorn psycopg2-binary psycopg2 mysqlclient
 
 if [ -f $VAR_PROJECT/$VAR_SITE/requirements.txt ];
 then
